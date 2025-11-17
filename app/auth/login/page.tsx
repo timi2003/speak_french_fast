@@ -54,7 +54,7 @@ export default function LoginPage() {
             Welcome back to <span className="text-[#ED4137]">SFF</span>
           </h1>
           <p className="text-xl text-gray-700 mt-3">
-            Master DELF • DALF • TEF • TCF with confidence
+            Master TEF • TCF with confidence
           </p>
         </div>
 
@@ -82,7 +82,7 @@ export default function LoginPage() {
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="h-12 text-base border-gray-300 focus:border-[#0C1E46]"
+                  className="h-12 text-[#0C1E46] border-gray-300 focus:border-[#0C1E46]"
                 />
               </div>
 
@@ -96,7 +96,7 @@ export default function LoginPage() {
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="h-12 text-base border-gray-300 focus:border-[#0C1E46]"
+                  className="h-12 text-[#0C1E46] border-gray-300 focus:border-[#0C1E46]"
                 />
               </div>
 
@@ -119,7 +119,7 @@ export default function LoginPage() {
               <p className="text-gray-600">
                 New to SFF?{" "}
                 <Link
-                  href="/auth/sign-up"
+                  href="/auth/signup"
                   className="font-bold text-[#ED4137] hover:underline underline-offset-4"
                 >
                   Create Free Account

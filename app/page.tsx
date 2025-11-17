@@ -1,5 +1,6 @@
 "use client"
 import { useEffect, useState } from "react";
+import Link from 'next/link'
 
 interface ExamModule {
   id: string;
@@ -42,50 +43,56 @@ export default function HomePage() {
           className="h-15 w-45"
         />
         <div className="flex gap-8">
-          <a
+          <Link
             href="/auth/login"
             className="px-5 py-2 border border-gray-300 rounded hover:bg-[#ED4137] text-white transition"
           >
             Login
-          </a>
-          <a
+          </Link>
+          <Link
             href="/auth/signup"
             className="px-5 py-2 bg-[#B0CCFE] text-[#0C1E46] font-semibold rounded hover:bg-blue-300 transition"
           >
             Sign Up
-          </a>
+          </Link>
         </div>
       </nav>
 
       {/* Hero Section */}
       <div className="bg-[url('/hero.jpeg')] bg-cover bg-center bg-no-repeat h-[85vh] w-full px-4 py-20 text-center flex flex-col justify-center items-center">
         <img src="/logonobg.png" alt="SFF Logo" className="h-40 w-auto" />
-        <h2 className="text-5xl font-bold mt-10 mb-4 text-[#0C1E46]">
-          Welcome to Speak French Fast Academy <span className="text-[#ED4137]">SFF</span>
+        <h2 className="text-4xl font-bold mt-10 mb-4 text-[#0C1E46]">
+          Speak French Fast The No. 1 TEF & TCF Exam Prep Platform in Africa.
         </h2>
-        <p className="text-3xl text-gray-700 mt-8 mb-8 max-w-2xl mx-auto">
-          We’re super excited to have you on this life-changing journey!
+        <p className="text-2xl text-gray-700 mt-8 mb-8 max-w-2xl mx-auto">
+          Practice real TEF/TCF exams, get instant AI corrections, and track your daily progress.
         </p>
-        <a
-          href="/auth/sign-up"
-          className="inline-block mt-12 px-8 py-5 bg-[#0C1E46] text-white rounded-md hover:bg-blue-900 font-medium text-2xl transition"
+        <Link
+          href="/auth/signup"
+          className="inline-block mt-8 px-8 py-5 bg-[#0C1E46] text-white rounded-md hover:bg-blue-900 font-medium text-md transition"
         >
-          Start Learning Today
-        </a>
+          Start Free Trial
+        </Link>
+        <Link
+          href="/auth/login"
+          className="inline-block mt-5 px-8 py-5 bg-[#0C1E46] text-white rounded-md hover:bg-blue-900 font-medium text-md transition"
+        >
+          Already a student? Login
+        </Link>
       </div>
 
       {/* Features Section */}
       <div className="max-w-5xl mx-auto px-4 py-16">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols- gap-8">
           {[
-          { title: "Quick Start",
-          desc: "No waiting, no complicated setup. Jump straight into your first French lesson the moment you sign up. Our carefully structured guided lessons walk you step-by-step from “Bonjour” to full conversations — perfect for busy Nigerians who want results fast!"},
-          { title: "Comprehensive",
-          desc: "Master ALL four language skills exactly how the DELF/DALF exams test them: Listening, Reading, Writing, and Speaking. Every lesson is designed by certified French examiners to mirror real exam formats, so you’re not just learning French — you’re learning exam-winning French."},
-          { title: "Effective Grading",
-          desc: "Get instant, accurate feedback on your writing and speaking 24/7. Our advanced AI (trained on thousands of real DELF/DALF answers) scores your responses like a human examiner would, highlights your mistakes, and shows you exactly how to improve — no more waiting days for corrections!"},
-          { title: "Community & Progress Tracking",
-          desc: "Join thousands of Nigerian students preparing for DELF, TEF, or travel. Learn directly from certified examiners in live Q&A sessions, compare your progress with peers, celebrate milestones, and stay motivated with detailed dashboards that show how close you are to fluency."},
+          { title: "Real Exam Practice",
+          desc: "Simulate real TEF and TCF exams designed to mirror official test conditions."},
+          { title: "AI Writing Correction",
+          desc: "Get instant grammar and expression feedback powered by AI."},
+          { title: "Progress Dashboard",
+          desc: "Track your daily performance and learning streaks as you improve."},
+          { title: "Join Our Global Learners",
+          desc: "Become part of Africa’s fastest-growing French learning community."},
           ].map((feature, i) => (
             <div
               key={i}
