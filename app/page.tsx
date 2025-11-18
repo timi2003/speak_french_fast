@@ -59,9 +59,9 @@ export default function HomePage() {
         <div className="absolute inset-0 bg-black/40" />
 
         <div className="relative z-10 max-w-5xl mx-auto">
-          <img src="/logonobg.png" alt="SFF Logo" className="h-32 md:h-48 mx-auto mb-6" />
+          <img src="/logonobg.png" alt="SFF Logo" className="h-25 md:h-40 mx-auto mb-6" />
 
-          <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold text-white leading-tight">
+          <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white leading-tight">
             Speak French Fast
             <br />
             <span className="text-[#ED4137]">The No. 1 TEF & TCF Exam Prep Platform in Africa</span>
