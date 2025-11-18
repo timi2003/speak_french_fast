@@ -48,7 +48,7 @@ export default function LoginPage() {
           <img
             src="/logonobg.png"
             alt="Speak French Fast Academy"
-            className="h-32 mx-auto mb-4"
+            className="h-22 mx-auto mb-4"
           />
           <h1 className="text-4xl font-bold text-[#0C1E46]">
             Welcome back to <span className="text-[#ED4137]">SFF</span>
