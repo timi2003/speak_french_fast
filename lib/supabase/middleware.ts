@@ -1,8 +1,8 @@
 import { createServerClient } from "@supabase/ssr"
 import { NextResponse, type NextRequest } from "next/server"
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL as string
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY as string
 
 if (!supabaseUrl || !supabaseAnonKey) {
   throw new Error("Missing Supabase environment variables")
@@ -19,7 +19,9 @@ export async function updateSession(request: NextRequest) {
       setAll(cookiesToSet) {
         cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value))
         supabaseResponse = NextResponse.next({ request })
-        cookiesToSet.forEach(({ name, value, options }) => supabaseResponse.cookies.set(name, value, options))
+        cookiesToSet.forEach(({ name, value, options }) =>
+          supabaseResponse.cookies.set(name, value, options),
+        )
       },
     },
   })
@@ -28,14 +30,12 @@ export async function updateSession(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser()
 
-  // Redirect unauthenticated users to login
   if (request.nextUrl.pathname !== "/" && !user && !request.nextUrl.pathname.startsWith("/auth")) {
     const url = request.nextUrl.clone()
     url.pathname = "/auth/login"
     return NextResponse.redirect(url)
   }
 
-  // Redirect authenticated users away from auth pages
   if (user && request.nextUrl.pathname.startsWith("/auth")) {
     const url = request.nextUrl.clone()
     url.pathname = "/dashboard"
