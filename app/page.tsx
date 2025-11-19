@@ -74,7 +74,7 @@ export default function HomePage() {
           {/* Buttons - Always fit, never overflow */}
           <div className="mt-10 flex flex-col sm:flex-row gap-4 justify-center items-center">
             <Link
-              href="/auth/sign-up"
+              href="/auth/signup"
               className="w-full sm:w-auto px-10 py-4 bg-[#0C1E46] text-white text-lg md:text-xl font-bold rounded-xl hover:bg-[#0a1838] transition shadow-xl"
             >
               Start Free Trial
