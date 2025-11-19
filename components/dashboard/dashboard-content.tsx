@@ -244,17 +244,17 @@ export default function DashboardContent({
         </div>
 
         {/* ────── MOTIVATION FOOTER ────── */}
-        {/* <div className="mt-20 text-center">
+        <div className="mt-20 text-center">
           <p className="text-lg text-gray-700">
             <span className="font-bold text-[#ED4137]">10,000+</span> Nigerians have passed their French exams with SFF.
             <br />
             <span className="text-[#0C1E46] font-medium">Your success story starts right here.</span>
           </p>
-        </div> */}
+        </div> 
       </main>
 
       {/* ────── FOOTER ────── */}
-      {/* <footer className="bg-[#0C1E46] text-white py-8 mt-20">
+      <footer className="bg-[#0C1E46] text-white py-8 mt-20">
         <div className="max-w-7xl mx-auto px-4 text-center">
           <img src="/logonobg2.png" alt="SFF Footer" className="h-12 mx-auto mb-4" />
           <p className="text-sm">
@@ -266,7 +266,7 @@ export default function DashboardContent({
             <Link href="/contact" className="hover:text-[#B0CCFE]">Support</Link>
           </div>
         </div>
-      </footer> */}
+      </footer>
     </div>
   );
 }
