@@ -1,6 +1,5 @@
 "use client";
 
-import type React from "react";
 import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -22,7 +21,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { CalendarCheck, Trash2, Plus, CheckCircle } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { CalendarCheck, Trash2, Plus, CheckCircle, Flame } from "lucide-react";
 
 export default function DailyTasksManager() {
   const [tasks, setTasks] = useState<any[]>([]);
@@ -45,12 +45,11 @@ export default function DailyTasksManager() {
     try {
       const supabase = createClient();
       const { data } = await supabase
-        .from("daily_tasks")
+        .from("daily Ctasks")
         .select("*")
         .order("day_number");
 
       setTasks(data || []);
-      // Auto-set next day number
       const nextDay = Math.max(...(data || []).map((t: any) => t.day_number), 0) + 1;
       setFormData((prev) => ({ ...prev, day_number: nextDay }));
     } catch (error) {
@@ -106,47 +105,50 @@ export default function DailyTasksManager() {
   };
 
   return (
-    <div className="space-y-10 font-Coolvetica">
-      {/* ────── CREATE NEW TASK ────── */}
-      <div className="bg-white/95 backdrop-blur-lg rounded-2xl shadow-xl border border-gray-100 p-8">
-        <div className="flex items-center gap-3 mb-6">
-          <CalendarCheck className="w-9 h-9 text-[#ED4137]" />
-          <h3 className="text-2xl md:text-3xl font-bold text-[#0C1E46]">
-            Create New Daily Task
+    <div className="space-y-8 font-Coolvetica">
+
+      {/* CREATE NEW TASK — Mobile-First */}
+      <div className="bg-white/95 backdrop-blur-lg rounded-2xl shadow-xl border border-gray-100 p-5 md:p-7">
+        <div className="flex items-center gap-3 mb-5">
+          <div className="p-3 bg-[#ED4137]/10 rounded-xl">
+            <CalendarCheck className="w-7 h-7 md:w-8 md:h-8 text-[#ED4137]" />
+          </div>
+          <h3 className="text-xl md:text-2xl font-bold text-[#0C1E46]">
+            Create Daily Task
           </h3>
         </div>
 
-        <form onSubmit={handleCreateTask} className="space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <form onSubmit={handleCreateTask} className="space-y-5">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
             {/* Day Number */}
             <div className="space-y-2">
-              <Label htmlFor="day" className="text-base font-medium text-[#0C1E46]">
+              <Label className="text-sm md:text-base font-semibold text-[#0C1E46]">
                 Day Number
               </Label>
               <Input
-                id="day"
                 type="number"
                 min="1"
                 max="30"
                 value={formData.day_number}
                 onChange={(e) =>
-                  setFormData({ ...formData, day_number: Number.parseInt(e.target.value) })
+                  setFormData({ ...formData, day_number: Number(e.target.value) })
                 }
                 required
-                className="h-14 text-lg border-gray-300 focus:border-[#0C1E46]"
+                className="h-12 text-base border-2 focus:border-[#0C1E46] rounded-xl"
+                placeholder="e.g. 5"
               />
             </div>
 
             {/* Task Type */}
             <div className="space-y-2">
-              <Label htmlFor="type" className="text-base font-medium text-[#0C1E46]">
+              <Label className="text-sm md:text-base font-semibold text-[#0C1E46]">
                 Task Type
               </Label>
               <Select
                 value={formData.task_type}
                 onValueChange={(value) => setFormData({ ...formData, task_type: value })}
               >
-                <SelectTrigger className="h-14 text-lg border-gray-300">
+                <SelectTrigger className="h-12 text-base border-2 rounded-xl">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -161,24 +163,23 @@ export default function DailyTasksManager() {
 
           {/* Instructions */}
           <div className="space-y-2">
-            <Label htmlFor="instructions" className="text-base font-medium text-[#0C1E46]">
-              Instructions / Speaking Prompt
+            <Label className="text-sm md:text-base font-semibold text-[#0C1E46]">
+              Instructions / Prompt
             </Label>
             <Textarea
-              id="instructions"
-              placeholder="e.g., Listen to the audio and answer the questions below... OR Record yourself talking about your family for 1 minute."
+              placeholder="e.g. Record yourself describing your daily routine in French..."
               value={formData.instructions}
               onChange={(e) => setFormData({ ...formData, instructions: e.target.value })}
               required
-              className="min-h-32 text-base resize-none border-gray-300 focus:border-[#0C1E46]"
+              className="min-h-28 md:min-h-32 text-base resize-none border-2 focus:border-[#0C1E46] rounded-xl"
             />
           </div>
 
-          {/* Success feedback */}
+          {/* Success Message */}
           {justCreated && (
-            <div className="flex items-center gap-3 text-green-600 bg-green-50 px-5 py-3 rounded-lg">
+            <div className="flex items-center gap-3 bg-green-50 text-green-700 px-5 py-3 rounded-xl border border-green-200">
               <CheckCircle className="w-6 h-6" />
-              <span className="font-medium">Task created successfully!</span>
+              <span className="font-bold">Task created successfully!</span>
             </div>
           )}
 
@@ -186,65 +187,83 @@ export default function DailyTasksManager() {
           <Button
             type="submit"
             disabled={creating}
-            className="w-full md:w-auto px-12 h-14 text-xl font-bold bg-[#ED4137] hover:bg-red-600 text-white shadow-lg transition-all"
+            className="w-full h-14 text-lg font-bold bg-[#ED4137] hover:bg-red-600 text-white rounded-xl shadow-lg transition-all"
           >
             <Plus className="w-6 h-6 mr-2" />
-            {creating ? "Creating Task..." : "Create Task"}
+            {creating ? "Creating..." : "Create Task"}
           </Button>
         </form>
       </div>
 
-      {/* ────── CURRENT TASKS LIST ────── */}
+      {/* CURRENT TASKS LIST — Responsive Table */}
       <div className="bg-white/95 backdrop-blur-lg rounded-2xl shadow-xl border border-gray-100 overflow-hidden">
-        <div className="bg-gradient-to-r from-[#0C1E46] to-[#0a1838] px-8 py-6">
-          <h3 className="text-2xl md:text-3xl font-bold text-white">
-            Current Daily Tasks ({tasks.length})
-          </h3>
-          <p className="text-blue-100 mt-1">Students see these every day</p>
+        <div className="bg-gradient-to-r from-[#0C1E46] to-[#0a1838] px-6 py-5 md:px-8 md:py-6">
+          <div className="flex items-center justify-between">
+            <div>
+              <h3 className="text-xl md:text-2xl font-bold text-white flex items-center gap-3">
+                <Flame className="w-7 h-7 md:w-8 md:h-8" />
+                Current Daily Tasks
+              </h3>
+              <p className="text-blue-100 text-sm md:text-base mt-1">
+                {tasks.length} active tasks
+              </p>
+            </div>
+            <div className="text-3xl md:text-4xl font-bold text-[#B0CCFE]">
+              {tasks.length}/30
+            </div>
+          </div>
         </div>
 
         {loading ? (
-          <div className="p-12 text-center text-gray-500 text-lg">
-            Loading tasks...
-          </div>
+          <div className="p-10 text-center text-gray-500">Loading tasks...</div>
         ) : tasks.length === 0 ? (
-          <div className="p-12 text-center text-gray-500 text-lg">
-            No tasks created yet. Create your first one above!
+          <div className="p-12 text-center">
+            <div className="text-5xl mb-4">No tasks yet</div>
+            <p className="text-gray-500">Create your first daily task above</p>
           </div>
         ) : (
           <div className="overflow-x-auto">
             <Table>
               <TableHeader>
                 <TableRow className="bg-[#B0CCFE]/20">
-                  <TableHead className="text-[#0C1E46] font-bold">Day</TableHead>
-                  <TableHead className="text-[#0C1E46] font-bold">Type</TableHead>
-                  <TableHead className="text-[#0C1E46] font-bold">Instructions</TableHead>
-                  <TableHead className="text-[#0C1E46] font-bold">Action</TableHead>
+                  <TableHead className="text-[#0C1E46] font-bold text-sm md:text-base">Day</TableHead>
+                  <TableHead className="text-[#0C1E46] font-bold text-sm md:text-base">Type</TableHead>
+                  <TableHead className="text-[#0C1E46] font-bold text-sm md:text-base">Instructions</TableHead>
+                  <TableHead className="text-right text-sm md:text-base">Action</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {tasks.map((task) => (
                   <TableRow key={task.id} className="hover:bg-[#B0CCFE]/5 transition">
-                    <TableCell className="font-bold text-[#0C1E46]">
+                    <TableCell className="font-bold text-[#0C1E46] text-lg">
                       Day {task.day_number}
                     </TableCell>
                     <TableCell>
-                      <span className="px-3 py-1 bg-[#B0CCFE] text-[#0C1E46] text-sm font-bold rounded-full capitalize">
+                      <Badge
+                        className={`capitalize font-bold ${
+                          task.task_type === "speaking"
+                            ? "bg-red-100 text-red-700"
+                            : task.task_type === "listening"
+                            ? "bg-blue-100 text-blue-700"
+                            : task.task_type === "reading"
+                            ? "bg-green-100 text-green-700"
+                            : "bg-purple-100 text-purple-700"
+                        }`}
+                      >
                         {task.task_type}
-                      </span>
+                      </Badge>
                     </TableCell>
-                    <TableCell className="max-w-md text-gray-700">
+                    <TableCell className="text-gray-700 text-sm md:text-base max-w-xs md:max-w-md">
                       {task.instructions}
                     </TableCell>
-                    <TableCell>
+                    <TableCell className="text-right">
                       <Button
                         variant="destructive"
                         size="sm"
                         onClick={() => handleDeleteTask(task.id)}
-                        className="bg-red-600 hover:bg-red-700"
+                        className="h-9 px-3 text-sm bg-red-600 hover:bg-red-700"
                       >
-                        <Trash2 className="w-4 h-4 mr-1" />
-                        Delete
+                        <Trash2 className="w-4 h-4" />
                       </Button>
                     </TableCell>
                   </TableRow>

@@ -20,14 +20,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Plus, FileQuestion, CheckCircle, Sparkles } from "lucide-react";
+import { FileQuestion, Plus, CheckCircle, Sparkles } from "lucide-react";
 
 interface QuestionManagerProps {
   exams: any[];
@@ -40,7 +33,6 @@ export default function QuestionManager({ exams }: QuestionManagerProps) {
   const [isCreating, setIsCreating] = useState(false);
   const [justCreated, setJustCreated] = useState(false);
 
-  // Form state for new question
   const [questionText, setQuestionText] = useState("");
   const [questionType, setQuestionType] = useState("");
 
@@ -82,7 +74,6 @@ export default function QuestionManager({ exams }: QuestionManagerProps) {
         exam_section_id: selectedSection,
         question_text: questionText,
         question_type: questionType,
-        // Add options, correct_answer, etc. later
       });
 
       if (error) throw error;
@@ -90,7 +81,6 @@ export default function QuestionManager({ exams }: QuestionManagerProps) {
       setJustCreated(true);
       setTimeout(() => setJustCreated(false), 2500);
 
-      // Reset form
       setQuestionText("");
       setQuestionType("");
       setIsCreating(false);
@@ -101,119 +91,119 @@ export default function QuestionManager({ exams }: QuestionManagerProps) {
   };
 
   return (
-    <div className="space-y-10 font-Coolvetica">
-      {/* ────── HEADER CARD ────── */}
-      <Card className="bg-white/95 backdrop-blur-lg shadow-2xl border-0 overflow-hidden">
-        <CardHeader className="bg-gradient-to-r from-[#0C1E46] to-[#0a1838] text-white">
-          <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-8">
-            <div>
-              <CardTitle className="text-3xl md:text-4xl font-bold flex items-center gap-4">
-                <FileQuestion className="w-12 h-12" />
-                Question Manager
-              </CardTitle>
-              <CardDescription className="text-blue-100 text-lg mt-4">
-                Add powerful questions that help Nigerian students master TEF/TCF
-              </CardDescription>
-            </div>
-          </div>
-        </CardHeader>
-      </Card>
+    <div className="space-y-8 font-Coolvetica">
 
-      {/* ────── EXAM & SECTION SELECTOR ────── */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+      {/* HERO HEADER */}
+      <div className="bg-white/95 backdrop-blur-lg rounded-2xl shadow-xl border border-gray-100 p-6 md:p-8">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-5">
+          <div>
+            <h2 className="text-2xl md:text-3xl font-bold text-[#0C1E46] flex items-center gap-3">
+              <FileQuestion className="w-8 h-8 md:w-10 md:h-10 text-[#ED4137]" />
+              Question Manager
+            </h2>
+            <p className="text-gray-600 mt-2 text-sm md:text-base">
+              Add powerful questions that help students master TEF/TCF
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {/* EXAM & SECTION SELECTOR — Mobile Stacked */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
         {/* Select Exam */}
-        <Card className="bg-white/95 backdrop-blur shadow-xl border border-gray-100">
-          <CardHeader className="pb-4">
-            <CardTitle className="text-xl text-[#0C1E46]">1. Choose Exam</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <Select value={selectedExam} onValueChange={handleExamSelect}>
-              <SelectTrigger className="h-16 text-lg border-gray-300">
-                <SelectValue placeholder="Select an exam to manage..." />
+        <div className="bg-white/95 backdrop-blur-lg rounded-2xl shadow-lg border border-gray-200 p-5">
+          <Label className="text-base md:text-lg font-bold text-[#0C1E46] mb-3 block">
+            1. Choose Exam
+          </Label>
+          <Select value={selectedExam} onValueChange={handleExamSelect}>
+            <SelectTrigger className="h-12 md:h-14 text-base border-2 rounded-xl">
+              <SelectValue placeholder="Select an exam..." />
+            </SelectTrigger>
+            <SelectContent>
+              {exams.map((exam) => (
+                <SelectItem key={exam.id} value={exam.id}>
+                  <div className="py-1">
+                    <p className="font-medium">{exam.title}</p>
+                    {exam.description && (
+                      <p className="text-xs text-gray-500 mt-1">{exam.description}</p>
+                    )}
+                  </div>
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+
+        {/* Select Section — Only show when exam is selected */}
+        {selectedExam && sections.length > 0 && (
+          <div className="bg-white/95 backdrop-blur-lg rounded-2xl shadow-lg border border-gray-200 p-5">
+            <Label className="text-base md:text-lg font-bold text-[#0C1E46] mb-3 block">
+              2. Choose Section
+            </Label>
+            <Select value={selectedSection} onValueChange={setSelectedSection}>
+              <SelectTrigger className="h-12 md:h-14 text-base border-2 rounded-xl">
+                <SelectValue placeholder="Select a section..." />
               </SelectTrigger>
               <SelectContent>
-                {exams.map((exam) => (
-                  <SelectItem key={exam.id} value={exam.id} className="text-base">
-                    <span className="font-medium">{exam.title}</span>
-                    <p className="text-xs text-gray-500">{exam.description || "No description"}</p>
+                {sections.map((section) => (
+                  <SelectItem key={section.id} value={section.id}>
+                    <div className="py-1">
+                      <p className="font-medium">{section.title}</p>
+                      {section.instructions && (
+                        <p className="text-xs text-gray-500 mt-1">{section.instructions}</p>
+                      )}
+                    </div>
                   </SelectItem>
                 ))}
               </SelectContent>
             </Select>
-          </CardContent>
-        </Card>
-
-        {/* Select Section */}
-        {selectedExam && sections.length > 0 && (
-          <Card className="bg-white/95 backdrop-blur shadow-xl border border-gray-100">
-            <CardHeader className="pb-4">
-              <CardTitle className="text-xl text-[#0C1E46]">2. Choose Section</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <Select value={selectedSection} onValueChange={setSelectedSection}>
-                <SelectTrigger className="h-16 text-lg border-gray-300">
-                  <SelectValue placeholder="Select a section..." />
-                </SelectTrigger>
-                <SelectContent>
-                  {sections.map((section) => (
-                    <SelectItem key={section.id} value={section.id} className="text-base">
-                      <span className="font-medium">{section.title}</span>
-                      {section.instructions && (
-                        <p className="text-xs text-gray-500">{section.instructions}</p>
-                      )}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </CardContent>
-          </Card>
+          </div>
         )}
       </div>
 
-      {/* ────── ADD QUESTION BUTTON ────── */}
+      {/* ADD QUESTION BUTTON — Only when section selected */}
       {selectedSection && (
         <div className="flex justify-center">
           <Dialog open={isCreating} onOpenChange={setIsCreating}>
             <DialogTrigger asChild>
-              <Button className="h-20 px-12 text-2xl font-bold bg-[#ED4137] hover:bg-red-600 text-white shadow-2xl transition-all">
-                <Plus className="w-10 h-10 mr-4" />
+              <Button className="h-14 px-8 text-lg font-bold bg-[#ED4137] hover:bg-red-600 shadow-lg rounded-xl flex items-center gap-3">
+                <Plus className="w-6 h-6" />
                 Add New Question
               </Button>
             </DialogTrigger>
 
-            <DialogContent className="sm:max-w-3xl font-Coolvetica">
-              <DialogHeader className="bg-gradient-to-r from-[#0C1E46] to-[#0a1838] text-white -m-6 p-10 rounded-t-2xl">
-                <DialogTitle className="text-3xl md:text-4xl font-bold flex items-center gap-4">
-                  <Sparkles className="w-10 h-10" />
+            <DialogContent className="max-w-md md:max-w-3xl font-Coolvetica">
+              <DialogHeader className="bg-gradient-to-r from-[#0C1E46] to-[#0a1838] text-white -m-6 p-6 md:p-8 rounded-t-2xl">
+                <DialogTitle className="text-2xl md:text-3xl font-bold flex items-center gap-3">
+                  <Sparkles className="w-8 h-8" />
                   Create New Question
                 </DialogTitle>
-                <DialogDescription className="text-blue-100 text-lg mt-4">
+                <DialogDescription className="text-blue-100 text-base md:text-lg mt-2">
                   Craft a question that challenges and teaches
                 </DialogDescription>
               </DialogHeader>
 
-              <div className="mt-10 space-y-8">
+              <div className="mt-6 space-y-6">
                 <div className="space-y-3">
-                  <Label htmlFor="qtext" className="text-xl font-medium text-[#0C1E46]">
+                  <Label className="text-base md:text-lg font-semibold text-[#0C1E46]">
                     Question Text
                   </Label>
                   <Textarea
-                    id="qtext"
-                    placeholder="e.g., Écoutez l'enregistrement et répondez à la question suivante..."
+                    placeholder="e.g. Écoutez l'enregistrement et répondez..."
                     value={questionText}
                     onChange={(e) => setQuestionText(e.target.value)}
-                    rows={6}
-                    className="text-lg resize-none border-gray-300 focus:border-[#0C1E46]"
+                    rows={5}
+                    className="text-base resize-none border-2 rounded-xl focus:border-[#0C1E46]"
                   />
                 </div>
 
                 <div className="space-y-3">
-                  <Label htmlFor="qtype" className="text-xl font-medium text-[#0C1E46]">
+                  <Label className="text-base md:text-lg font-semibold text-[#0C1E46]">
                     Question Type
                   </Label>
                   <Select value={questionType} onValueChange={setQuestionType}>
-                    <SelectTrigger className="h-16 text-lg border-gray-300">
-                      <SelectValue placeholder="Select question format..." />
+                    <SelectTrigger className="h-12 md:h-14 text-base border-2 rounded-xl">
+                      <SelectValue placeholder="Choose format..." />
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="mcq">Multiple Choice (MCQ)</SelectItem>
@@ -225,15 +215,15 @@ export default function QuestionManager({ exams }: QuestionManagerProps) {
                 </div>
 
                 {justCreated && (
-                  <div className="flex items-center gap-4 text-green-600 bg-green-50 px-6 py-4 rounded-xl">
-                    <CheckCircle className="w-8 h-8" />
-                    <span className="text-xl font-bold">Question saved successfully!</span>
+                  <div className="flex items-center gap-3 bg-green-50 text-green-700 px-5 py-3 rounded-xl border border-green-200">
+                    <CheckCircle className="w-6 h-6" />
+                    <span className="font-bold">Question saved successfully!</span>
                   </div>
                 )}
 
                 <Button
                   onClick={handleCreateQuestion}
-                  className="w-full h-16 text-2xl font-bold bg-[#ED4137] hover:bg-red-600 text-white shadow-xl"
+                  className="w-full h-14 text-lg font-bold bg-[#ED4137] hover:bg-red-600 rounded-xl shadow-lg"
                 >
                   Save Question
                 </Button>
@@ -243,32 +233,34 @@ export default function QuestionManager({ exams }: QuestionManagerProps) {
         </div>
       )}
 
-      {/* ────── EMPTY STATE ────── */}
+      {/* EMPTY STATE — When no exam selected */}
       {!selectedExam && (
-        <div className="text-center py-20 bg-white/80 backdrop-blur rounded-3xl shadow-xl">
-          <div className="bg-gray-100 w-32 h-32 rounded-full flex items-center justify-center mx-auto mb-8">
-            <FileQuestion className="w-16 h-16 text-gray-400" />
+        <div className="bg-white/95 backdrop-blur-lg rounded-2xl shadow-xl border border-gray-100 p-12 text-center">
+          <div className="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6">
+            <FileQuestion className="w-10 h-10 text-gray-400" />
           </div>
-          <p className="text-2xl text-gray-600 font-medium">
+          <p className="text-xl md:text-2xl font-bold text-gray-600">
             Select an exam to start adding questions
           </p>
-          <p className="text-gray-500 mt-3">
+          <p className="text-gray-500 mt-3 text-sm md:text-base">
             Every great question helps a student pass TEF/TCF
           </p>
         </div>
       )}
 
-      {/* ────── MOTIVATION ────── */}
-      <div className="mt-20 text-center bg-gradient-to-r from-[#0C1E46] to-[#0a1838] text-white py-12 px-8 rounded-3xl shadow-2xl">
-        <p className="text-3xl md:text-4xl font-bold">
-          Every question you write
-        </p>
-        <p className="text-3xl md:text-4xl font-bold text-[#ED4137] mt-4">
-          Changes a Nigerian student’s future
-        </p>
-        <p className="text-xl text-blue-100 mt-8">
-          Over <span className="font-bold text-[#B0CCFE]">10,000+</span> learners are counting on you
-        </p>
+      {/* MOTIVATION BLOCK */}
+      <div className="mt-16 text-center">
+        <div className="bg-gradient-to-r from-[#0C1E46] via-[#ED4137] to-purple-700 text-white py-12 px-8 rounded-2xl shadow-2xl">
+          <p className="text-2xl md:text-4xl font-bold">
+            Every question you write
+          </p>
+          <p className="text-2xl md:text-4xl font-bold mt-4 text-[#B0CCFE]">
+            Changes a Nigerian student’s future
+          </p>
+          <p className="text-lg md:text-xl mt-6 opacity-90">
+            Over <span className="font-bold text-yellow-300">10,000+</span> learners are counting on you
+          </p>
+        </div>
       </div>
     </div>
   );
