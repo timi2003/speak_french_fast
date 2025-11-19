@@ -33,7 +33,7 @@ export default function AdminDashboard({ user }: { user: any }) {
       <div className="fixed inset-0 bg-gradient-to-tr from-[#0C1E46]/5 to-[#ED4137]/5 -z-10" />
 
       {/* NAVBAR — Compact & Mobile-Friendly */}
-      <nav className="bg-gradient-to-r from-[#0C1E46] to-[#0a1838] shadow-xl px-4 py-4 sticky top-0 z-50 border-b-4 border-[#ED4137]">
+      <nav className="bg-gradient-to-r from-[#0C1E46] to-[#0a1838] shadow-xl px-4 py-4 sticky top-0 z-50 border-b-4 ">
         <div className="max-w-7xl mx-auto flex justify-between items-center">
           <div className="flex items-center gap-3">
             <img src="/logonobg.png" alt="SFF" className="h-12 md:h-14" />
@@ -164,7 +164,7 @@ export default function AdminDashboard({ user }: { user: any }) {
       </main>
 
       {/* FOOTER — Clean */}
-      <footer className="bg-[#0C1E46] text-white py-8 mt-20 border-t-4 border-[#ED4137]">
+      <footer className="bg-[#0C1E46] text-white py-8 mt-20 border-t-4">
         <div className="max-w-7xl mx-auto px-4 text-center">
           <img src="/logonobg2.png" alt="SFF" className="h-12 mx-auto mb-3" />
           <p className="text-sm md:text-base">
