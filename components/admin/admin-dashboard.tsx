@@ -77,21 +77,21 @@ export default function AdminDashboard({ user }: { user: any }) {
           <TabsList className="grid grid-cols-3 w-full h-14 md:h-16 bg-white/90 backdrop-blur-lg shadow-lg rounded-2xl mb-8 border border-gray-200">
             <TabsTrigger
               value="questions"
-              className="text-sm md:text-base font-bold data-[state=active]:bg-gradient-to-r data-[state=active]:from-[#0C1E46] data-[state=active]:to-[#0a1838] data-[state=active]:text-white rounded-l-2xl flex items-center justify-center gap-2"
+              className="text-sm md:text-[#0C1E46] font-bold data-[state=active]:bg-gradient-to-r data-[state=active]:from-[#0C1E46] data-[state=active]:to-[#0a1838] data-[state=active]:text-white rounded-l-2xl flex items-center justify-center gap-2"
             >
               <Upload className="w-5 h-5" />
               Questions
             </TabsTrigger>
             <TabsTrigger
               value="daily-tasks"
-              className="text-sm md:text-base font-bold data-[state=active]:bg-gradient-to-r data-[state=active]:from-[#ED4137] data-[state=active]:to-red-600 data-[state=active]:text-white flex items-center justify-center gap-2"
+              className="text-sm md:text-[#0C1E46] font-bold data-[state=active]:bg-gradient-to-r data-[state=active]:from-[#ED4137] data-[state=active]:to-red-600 data-[state=active]:text-white flex items-center justify-center gap-2"
             >
               <CalendarCheck className="w-5 h-5" />
               Tasks
             </TabsTrigger>
             <TabsTrigger
               value="student-progress"
-              className="text-sm md:text-base font-bold data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-600 data-[state=active]:to-indigo-700 data-[state=active]:text-white rounded-r-2xl flex items-center justify-center gap-2"
+              className="text-sm md:text-[#0C1E46] font-bold data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-600 data-[state=active]:to-indigo-700 data-[state=active]:text-white rounded-r-2xl flex items-center justify-center gap-2"
             >
               <Users className="w-5 h-5" />
               Students

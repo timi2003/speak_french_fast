@@ -134,7 +134,7 @@ export default function StudentProgressViewer() {
           placeholder="Search by name or email..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          className="pl-14 h-14 text-lg border-2 rounded-xl shadow-md focus:border-[#ED4137]"
+          className="pl-14 h-14 text-[#0C1E46] text-lg border-2 rounded-xl shadow-md focus:border-[#0C1E46]"
         />
       </div>
 
@@ -286,20 +286,7 @@ export default function StudentProgressViewer() {
         </div>
       </div>
 
-      {/* FINAL MOTIVATION — Compact */}
-      <div className="text-center">
-        <div className="bg-gradient-to-r from-[#0C1E46] via-[#ED4137] to-purple-700 text-white py-12 px-8 rounded-2xl shadow-2xl">
-          <p className="text-3xl md:text-5xl font-bold">
-            {totalStudents.toLocaleString()} Nigerian dreams
-          </p>
-          <p className="text-3xl md:text-5xl font-bold mt-4 text-[#B0CCFE]">
-            becoming French reality
-          </p>
-          <p className="text-xl md:text-2xl mt-6 opacity-90">
-            Because of <span className="text-yellow-300 font-bold">YOU</span>
-          </p>
-        </div>
-      </div>
+     
     </div>
   );
 }

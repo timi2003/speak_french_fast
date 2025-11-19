@@ -119,10 +119,10 @@ export default function QuestionUploadForm() {
               Module
             </Label>
             <Select value={formData.module} onValueChange={(v) => handleInputChange("module", v)}>
-              <SelectTrigger className="h-12 md:h-14 text-base md:text-lg border-2 rounded-xl">
+              <SelectTrigger className="h-12 md:h-14 text-[#0C1E46] md:text-lg border-2 rounded-xl">
                 <SelectValue />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent className="text-[#0C1E46]">
                 <SelectItem value="listening">Listening</SelectItem>
                 <SelectItem value="reading">Reading</SelectItem>
                 <SelectItem value="writing">Writing</SelectItem>
@@ -140,7 +140,7 @@ export default function QuestionUploadForm() {
               value={formData.skill_type}
               onChange={(e) => handleInputChange("skill_type", e.target.value)}
               required
-              className="h-12 md:h-14 text-base border-2 rounded-xl"
+              className="h-12 md:h-14 text-[#0C1E46] border-2 rounded-xl"
             />
           </div>
         </div>
@@ -156,7 +156,7 @@ export default function QuestionUploadForm() {
             onChange={(e) => handleInputChange("question_text", e.target.value)}
             required
             rows={5}
-            className="text-base resize-none border-2 rounded-xl focus:border-[#0C1E46]"
+            className="text-[#0C1E46] resize-none border-2 rounded-xl focus:border-[#0C1E46]"
           />
         </div>
 
@@ -172,7 +172,7 @@ export default function QuestionUploadForm() {
               placeholder="https://cdn.example.com/audio/dialogue.mp3"
               value={formData.audio_url}
               onChange={(e) => handleInputChange("audio_url", e.target.value)}
-              className="h-12 md:h-14 text-base border-2 rounded-xl"
+              className="h-12 md:h-14 text-[#0C1E46] border-2 rounded-xl"
             />
           </div>
         )}
@@ -197,7 +197,7 @@ export default function QuestionUploadForm() {
                       value={formData.options[key]}
                       onChange={(e) => handleOptionChange(key, e.target.value)}
                       placeholder={`Option ${key}...`}
-                      className="h-12 text-base border-2 rounded-xl"
+                      className="h-12 text-[#0C1E46] border-2 rounded-xl"
                     />
                   </div>
                 ))}
@@ -209,10 +209,10 @@ export default function QuestionUploadForm() {
                 Correct Answer
               </Label>
               <Select value={formData.correct_answer} onValueChange={(v) => handleInputChange("correct_answer", v)}>
-                <SelectTrigger className="h-12 md:h-14 text-base md:text-lg border-2 rounded-xl">
+                <SelectTrigger className="h-12 md:h-14 text-[#0C1E46] md:text-lg border-2 rounded-xl">
                   <SelectValue />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent className="text-[#0C1E46]">
                   {["A", "B", "C", "D"].map((opt) => (
                     <SelectItem key={opt} value={opt}>Option {opt}</SelectItem>
                   ))}
@@ -232,7 +232,7 @@ export default function QuestionUploadForm() {
             value={formData.explanation}
             onChange={(e) => handleInputChange("explanation", e.target.value)}
             rows={4}
-            className="text-base resize-none border-2 rounded-xl focus:border-[#0C1E46]"
+            className="text-[#0C1E46] resize-none border-2 rounded-xl focus:border-[#0C1E46]"
           />
         </div>
 
@@ -242,10 +242,10 @@ export default function QuestionUploadForm() {
             Difficulty Level
           </Label>
           <Select value={formData.difficulty_level} onValueChange={(v) => handleInputChange("difficulty_level", v)}>
-            <SelectTrigger className="h-12 md:h-14 text-base md:text-lg border-2 rounded-xl">
+            <SelectTrigger className="h-12 md:h-14 text-[#0C1E46] md:text-lg border-2 rounded-xl">
               <SelectValue />
             </SelectTrigger>
-            <SelectContent>
+            <SelectContent className="text-[#0C1E46]">
               <SelectItem value="beginner">Beginner</SelectItem>
               <SelectItem value="intermediate">Intermediate</SelectItem>
               <SelectItem value="advanced">Advanced</SelectItem>
@@ -277,20 +277,7 @@ export default function QuestionUploadForm() {
         </Button>
       </form>
 
-      {/* Motivation Footer */}
-      <div className="mt-16 text-center">
-        <div className="bg-gradient-to-r from-[#0C1E46] via-[#ED4137] to-purple-700 text-white py-10 px-8 rounded-2xl shadow-2xl">
-          <p className="text-2xl md:text-4xl font-bold">
-            Every question you upload
-          </p>
-          <p className="text-2xl md:text-4xl font-bold mt-3 text-[#B0CCFE]">
-            Changes a life in Nigeria
-          </p>
-          <p className="text-lg md:text-xl mt-6 opacity-90">
-            <span className="font-bold text-yellow-300">10,000+</span> students thank you
-          </p>
-        </div>
-      </div>
+    
     </div>
   );
 }

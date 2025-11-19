@@ -134,7 +134,7 @@ export default function DailyTasksManager() {
                   setFormData({ ...formData, day_number: Number(e.target.value) })
                 }
                 required
-                className="h-12 text-base border-2 focus:border-[#0C1E46] rounded-xl"
+                className="h-12 text-[#0C1E46] border-2 focus:border-[#0C1E46] rounded-xl"
                 placeholder="e.g. 5"
               />
             </div>
@@ -148,10 +148,10 @@ export default function DailyTasksManager() {
                 value={formData.task_type}
                 onValueChange={(value) => setFormData({ ...formData, task_type: value })}
               >
-                <SelectTrigger className="h-12 text-base border-2 rounded-xl">
+                <SelectTrigger className="h-12 text-[#0C1E46] border-2 rounded-xl">
                   <SelectValue />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent className="text-[#0C1E46]">
                   <SelectItem value="listening">Listening</SelectItem>
                   <SelectItem value="reading">Reading</SelectItem>
                   <SelectItem value="writing">Writing</SelectItem>
@@ -171,7 +171,7 @@ export default function DailyTasksManager() {
               value={formData.instructions}
               onChange={(e) => setFormData({ ...formData, instructions: e.target.value })}
               required
-              className="min-h-28 md:min-h-32 text-base resize-none border-2 focus:border-[#0C1E46] rounded-xl"
+              className="min-h-28 md:min-h-32 text-[#0C1E46] resize-none border-2 focus:border-[#0C1E46] rounded-xl"
             />
           </div>
 
@@ -229,7 +229,7 @@ export default function DailyTasksManager() {
                   <TableHead className="text-[#0C1E46] font-bold text-sm md:text-base">Day</TableHead>
                   <TableHead className="text-[#0C1E46] font-bold text-sm md:text-base">Type</TableHead>
                   <TableHead className="text-[#0C1E46] font-bold text-sm md:text-base">Instructions</TableHead>
-                  <TableHead className="text-right text-sm md:text-base">Action</TableHead>
+                  <TableHead className="text-right text-sm md:text-[#0C1E46]">Action</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
