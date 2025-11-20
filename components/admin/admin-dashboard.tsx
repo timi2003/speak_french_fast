@@ -3,172 +3,167 @@
 import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import {
-  LogOut,
-  Upload,
-  CalendarCheck,
-  Users,
-  Sparkles,
-  Crown,
-  Trophy,
-} from "lucide-react";
+import { LogOut, Settings, Upload, CalendarDays, Users } from "lucide-react";
 
-import QuestionUploadForm from "@/components/admin/question-upload-form";
-import DailyTasksManager from "@/components/admin/daily-tasks-manager";
+import ModuleConfig from "@/components/admin/module-config";
+import EnhancedQuestionUpload from "@/components/admin/enhanced-question-upload";
+import CycleTaskManager from "@/components/admin/cycle-task-manager";
 import StudentProgressViewer from "@/components/admin/student-progress-viewer";
 
-export default function AdminDashboard({ user }: { user: any }) {
+export default function AdminDashboard({ user }: any) {
   const router = useRouter();
 
   const handleLogout = async () => {
-  const supabase = createClient();
+    const supabase = createClient();
     await supabase.auth.signOut();
     router.push("/auth/login");
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-[#B0CCFE]/10 to-indigo-50 font-Coolvetica">
-      <div className="fixed inset-0 bg-[url('/pattern.png')] opacity-5 -z-10" />
-      <div className="fixed inset-0 bg-gradient-to-tr from-[#0C1E46]/5 to-[#ED4137]/5 -z-10" />
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-[#B0CCFE]/5 to-indigo-50">
+      {/* Subtle Brand Overlay */}
+      <div className="fixed inset-0 bg-[url('/pattern.png')] opacity-5 pointer-events-none -z-10" />
+      <div className="fixed inset-0 bg-gradient-to-tr from-[#0C1E46]/3 to-[#ED4137]/3 pointer-events-none -z-10" />
 
-      {/* NAVBAR — Compact & Mobile-Friendly */}
-      <nav className="bg-gradient-to-r from-[#0C1E46] to-[#0a1838] shadow-xl px-4 py-4 sticky top-0 z-50 border-b-4 ">
-        <div className="max-w-7xl mx-auto flex justify-between items-center">
+      {/* Header */}
+      <header className="bg-gradient-to-r from-[#0C1E46] to-[#0a1838] shadow-lg border-b-4 border-[#B0CCFE]/20 sticky top-0 z-50">
+        <div className="container mx-auto px-4 py-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <div className="flex items-center gap-3">
-            <img src="/logonobg.png" alt="SFF" className="h-12 md:h-14" />
+            <img src="/logonobg.png" alt="SFF" className="h-10 md:h-12" />
             <div>
-              <h1 className="text-xl md:text-3xl font-bold text-white">
-                Admin <span className="text-[#ED4137]">Hub</span>
+              <h1 className="text-xl md:text-2xl font-bold text-white">
+                Admin <span className="text-[#ED4137]">Dashboard</span>
               </h1>
-              <p className="text-xs md:text-sm text-blue-100 hidden sm:block">
-                {user?.email}
-              </p>
+              <p className="text-xs text-blue-200 hidden sm:block">{user?.email}</p>
             </div>
           </div>
           <Button
             onClick={handleLogout}
+            variant="outline"
             size="sm"
-            className="bg-white/10 hover:bg-[#ED4137] text-white border border-white/20 font-medium px-4 h-10 text-sm"
+            className="bg-white/10 hover:bg-[#ED4137] text-white border border-white/20 h-10 px-5 text-sm"
           >
             <LogOut className="w-4 h-4 mr-2" />
-            Logout
+            <span className="hidden sm:inline">Logout</span>
           </Button>
         </div>
-      </nav>
+      </header>
 
-      <main className="max-w-7xl mx-auto px-4 py-8 md:px-6 md:py-10">
-
-        {/* Welcome — Compact & Powerful */}
+      {/* Main Content */}
+      <main className="container mx-auto px-4 py-8 md:py-12 max-w-7xl">
+        {/* Greeting */}
         <div className="text-center mb-10">
-          <h2 className="text-3xl md:text-5xl font-bold text-[#0C1E46]">
-            Welcome back,
-            <span className="block text-transparent bg-clip-text bg-gradient-to-r from-[#0C1E46] to-[#ED4137]">
-              Admin
-            </span>
+          <h2 className="text-2xl md:text-4xl font-bold text-[#0C1E46]">
+            Welcome back, <span className="text-[#ED4137]">Admin</span>
           </h2>
-          <p className="text-lg md:text-xl text-gray-700 mt-3">
-            You're <span className="text-[#ED4137] font-bold">changing lives</span> in Nigeria
+          <p className="text-base md:text-lg text-gray-700 mt-2">
+            Manage modules, questions, tasks, and student progress
           </p>
         </div>
 
-        {/* TABS — Compact, Clean, Responsive */}
-        <Tabs defaultValue="questions" className="w-full">
-          <TabsList className="grid grid-cols-3 w-full h-14 md:h-16 bg-white/90 backdrop-blur-lg shadow-lg rounded-2xl mb-8 border border-gray-200">
+        {/* Responsive Tabs */}
+        <Tabs defaultValue="module-config" className="w-full">
+          <TabsList className="grid grid-cols-2 sm:grid-cols-4 w-full h-14 bg-white/90 backdrop-blur-md shadow-md rounded-xl mb-8 border border-gray-200">
+            <TabsTrigger
+              value="module-config"
+              className="text-xs sm:text-sm font-medium data-[state=active]:bg-[#0C1E46] data-[state=active]:text-white rounded-l-xl sm:rounded-none flex items-center justify-center gap-2"
+            >
+              <Settings className="w-4 h-4" />
+              <span className="hidden sm:inline">Module</span> Config
+            </TabsTrigger>
             <TabsTrigger
               value="questions"
-              className="text-[#0C1E46] text-sm md:text-[#0C1E46] font-bold data-[state=active]:bg-gradient-to-r data-[state=active]:from-[#0C1E46] data-[state=active]:to-[#0a1838] data-[state=active]:text-white rounded-l-2xl flex items-center justify-center gap-2"
+              className="text-xs sm:text-sm font-medium data-[state=active]:bg-[#0C1E46] data-[state=active]:text-white flex items-center justify-center gap-2"
             >
-              <Upload className="w-5 h-5" />
-              Questions
+              <Upload className="w-4 h-4" />
+              <span className="hidden sm:inline">Upload</span> Questions
             </TabsTrigger>
             <TabsTrigger
               value="daily-tasks"
-              className="text-[#0C1E46] text-sm md:text-[#0C1E46] font-bold data-[state=active]:bg-gradient-to-r data-[state=active]:from-[#ED4137] data-[state=active]:to-red-600 data-[state=active]:text-white flex items-center justify-center gap-2"
+              className="text-xs sm:text-sm font-medium data-[state=active]:bg-[#ED4137] data-[state=active]:text-white flex items-center justify-center gap-2"
             >
-              <CalendarCheck className="w-5 h-5" />
-              Tasks
+              <CalendarDays className="w-4 h-4" />
+              <span className="hidden sm:inline">Daily</span> Tasks
             </TabsTrigger>
             <TabsTrigger
               value="student-progress"
-              className="text-[#0C1E46] text-sm md:text-[#0C1E46] font-bold data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-600 data-[state=active]:to-indigo-700 data-[state=active]:text-white rounded-r-2xl flex items-center justify-center gap-2"
+              className="text-xs sm:text-sm font-medium data-[state=active]:bg-[#0C1E46] data-[state=active]:text-white rounded-r-xl sm:rounded-none flex items-center justify-center gap-2"
             >
-              <Users className="w-5 h-5" />
-              Students
+              <Users className="w-4 h-4" />
+              <span className="hidden sm:inline">Student</span> Progress
             </TabsTrigger>
           </TabsList>
 
-          {/* QUESTIONS TAB */}
-          <TabsContent value="questions" className="mt-0">
-            <div className="bg-gradient-to-br from-[#0C1E46] to-[#0a1838] rounded-2xl shadow-xl overflow-hidden">
-              <div className="bg-black/30 backdrop-blur px-6 py-6 md:px-8 md:py-8">
-                <div className="text-center text-white">
-                  <h2 className="text-2xl md:text-4xl font-bold flex items-center justify-center gap-3">
-                    <Sparkles className="w-10 h-10 md:w-12 md:h-12 text-yellow-300" />
-                    Question Bank
-                  </h2>
-                  <p className="text-sm md:text-lg text-blue-100 mt-2">
-                    Upload questions that power fluency
-                  </p>
-                </div>
-              </div>
-              <div className="bg-white/95 p-6 md:p-8">
-                <QuestionUploadForm />
-              </div>
-            </div>
+          {/* Module Config */}
+          <TabsContent value="module-config">
+            <Card className="bg-[#0C1E46] border-2 border-[#B0CCFE]/30 shadow-lg">
+              <CardHeader className="bg-gradient-to-r from-[#0C1E46] to-[#0a1838] text-white rounded-t-lg">
+                <CardTitle className="text-lg md:text-xl">Module Configuration</CardTitle>
+                <CardDescription className="text-blue-100">
+                  Configure timer, instructions, and scoring for each exam section
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="p-6 bg-white">
+                <ModuleConfig />
+              </CardContent>
+            </Card>
           </TabsContent>
 
-          {/* DAILY TASKS TAB */}
-          <TabsContent value="daily-tasks" className="mt-0">
-            <div className="bg-gradient-to-br from-[#ED4137] to-red-600 rounded-2xl shadow-xl overflow-hidden">
-              <div className="bg-black/30 backdrop-blur px-6 py-6 md:px-8 md:py-8">
-                <div className="text-center text-white">
-                  <h2 className="text-2xl md:text-4xl font-bold flex items-center justify-center gap-3">
-                    <CalendarCheck className="w-10 h-10 md:w-12 md:h-12 text-yellow-200" />
-                    Daily Tasks
-                  </h2>
-                  <p className="text-sm md:text-lg text-red-100 mt-2">
-                    Keep students consistent every day
-                  </p>
-                </div>
-              </div>
-              <div className="bg-white/95 p-6 md:p-8">
-                <DailyTasksManager />
-              </div>
-            </div>
+          {/* Upload Questions */}
+          <TabsContent value="questions">
+            <Card className="bg-[#0C1E46] border-2 border-[#B0CCFE]/30 shadow-lg">
+              <CardHeader className="bg-gradient-to-r from-[#0C1E46] to-[#0a1838] text-white rounded-t-lg">
+                <CardTitle className="text-lg md:text-xl">Upload Exam Questions</CardTitle>
+                <CardDescription className="text-blue-100">
+                  Add and organize questions by module with full control
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="p-6 bg-white">
+                <EnhancedQuestionUpload />
+              </CardContent>
+            </Card>
           </TabsContent>
 
-          {/* STUDENT PROGRESS TAB */}
-          <TabsContent value="student-progress" className="mt-0">
-            <div className="bg-gradient-to-br from-purple-600 via-indigo-600 to-[#0C1E46] rounded-2xl shadow-xl overflow-hidden">
-              <div className="bg-black/30 backdrop-blur px-6 py-6 md:px-8 md:py-8">
-                <div className="text-center text-white">
-                  <h2 className="text-2xl md:text-4xl font-bold flex items-center justify-center gap-3">
-                    <Crown className="w-10 h-10 md:w-12 md:h-12 text-yellow-300" />
-                    Student Progress
-                    <Trophy className="w-10 h-10 md:w-12 md:h-12 text-yellow-300" />
-                  </h2>
-                  <p className="text-sm md:text-lg text-white/90 mt-2">
-                    Track streaks, XP, and real impact
-                  </p>
-                </div>
-              </div>
-              <div className="bg-white/95">
+          {/* Daily Tasks */}
+          <TabsContent value="daily-tasks">
+            <Card className="bg-[#ED4137] border-2 border-red-500/30 shadow-lg">
+              <CardHeader className="bg-gradient-to-r from-[#ED4137] to-red-600 text-white rounded-t-lg">
+                <CardTitle className="text-lg md:text-xl">Manage Daily Tasks</CardTitle>
+                <CardDescription className="text-red-100">
+                  Create and customize 30-day learning cycles
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="p-6 bg-white">
+                <CycleTaskManager />
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* Student Progress */}
+          <TabsContent value="student-progress">
+            <Card className="bg-[#0C1E46] border-2 border-[#B0CCFE]/30 shadow-lg ">
+              <CardHeader className="bg-gradient-to-r from-[#0C1E46] to-[#0a1838] text-white rounded-t-lg">
+                <CardTitle className="text-lg md:text-xl">Student Progress & Analytics</CardTitle>
+                <CardDescription className="text-blue-100">
+                  Monitor performance, streaks, and subscription status
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="p-6 bg-white">
                 <StudentProgressViewer />
-              </div>
-            </div>
+              </CardContent>
+            </Card>
           </TabsContent>
         </Tabs>
-
-       
       </main>
 
-      {/* FOOTER — Clean */}
-      <footer className="bg-[#0C1E46] text-white py-8 mt-20 border-t-4">
-        <div className="max-w-7xl mx-auto px-4 text-center">
-          <img src="/logonobg2.png" alt="SFF" className="h-12 mx-auto mb-3" />
-          <p className="text-sm md:text-base">
-            © {new Date().getFullYear()} Speak French Fast Academy
+      {/* Footer */}
+      <footer className="bg-[#0C1E46] text-white py-8 mt-16 border-t-4 border-[#B0CCFE]/20">
+        <div className="container mx-auto px-4 text-center">
+          <img src="/logonobg2.png" alt="SFF" className="h-10 mx-auto mb-3" />
+          <p className="text-sm">
+            © {new Date().getFullYear()} Speak French Fast Academy. All rights reserved.
           </p>
         </div>
       </footer>
