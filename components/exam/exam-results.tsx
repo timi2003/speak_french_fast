@@ -84,7 +84,7 @@ export default function ExamResults({ attempt, responses }: ExamResultsProps) {
               <div>
                 <p className="text-6xl md:text-8xl font-black">{attempt.total_score}<span className="text-5xl">%</span></p>
                 <p className="text-4xl md:text-6xl font-bold mt-4">Total Score</p>
-              </>
+              </div>
               <div className="mt-10">
                 <Badge className="text-5xl md:text-7xl px-12 py-6 font-black bg-white/20 backdrop-blur border-4 border-white">
                   {attempt.cecrl_level}
