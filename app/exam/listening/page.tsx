@@ -68,7 +68,7 @@ export default function ListeningExamPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           module_name: "listening",
-          questions_attempted,
+          questionsAttempted,
           time_taken_seconds: 1500 - timeLeft,
         }),
       });
