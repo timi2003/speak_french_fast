@@ -204,7 +204,7 @@ export default function ModuleConfig() {
                         })
                       }
                       disabled={updating === config.id}
-                      className="w-full h-16 sm:h-20 text-xl sm:text-2xl font-black bg-[#ED4137] hover:bg-red-600 shadow-2xl rounded-2xl flex items-center justify-center gap-4 transition-all transform hover:scale-105"
+                      className="w-full h-16 sm:h-20 text-xl sm:text-xl font-black bg-[#ED4137] hover:bg-red-600 shadow-2xl rounded-2xl flex items-center justify-center gap-3 transition-all transform hover:scale-105"
                     >
                       <Save className="w-8 h-8" />
                       {updating === config.id ? "Saving Changes..." : "Save Configuration"}
