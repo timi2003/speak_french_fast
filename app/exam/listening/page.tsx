@@ -76,11 +76,12 @@ export default function ListeningExamPage() {
       if (response.ok) {
         router.push("/exam/listening/results");
       } else {
-        alert("Failed to submit. Please try again.");
+        const error = await response.json();
+        alert(error.message || "Failed to submit exam.");
       }
     } catch (error) {
       console.error("[SFF] Submission error:", error);
-      alert("Network error. Check your connection.");
+      alert("Network error. Please check your connection.");
     } finally {
       setIsSubmitting(false);
     }
@@ -174,7 +175,7 @@ export default function ListeningExamPage() {
 
           <CardContent className="pt-12 pb-16 px-6 md:px-12 space-y-12">
 
-            {/* AUDIO PLAYER — FULL HERO */}
+            {/* AUDIO PLAYER */}
             {question?.audio_url && (
               <div className="bg-gradient-to-r from-purple-100 to-pink-100 p-10 rounded-3xl border-4 border-purple-300 shadow-2xl">
                 <div className="flex items-center justify-center gap-6 mb-8">
@@ -202,14 +203,14 @@ export default function ListeningExamPage() {
               </p>
             </div>
 
-            {/* ANSWER OPTIONS */}
+            {/* ANSWER OPTIONS — FULLY TYPE-SAFE */}
             <RadioGroup
               value={answers[question?.id] || ""}
               onValueChange={(value) => handleAnswerChange(question?.id, value)}
               className="space-y-6"
             >
               {question?.options &&
-                Object.entries(question.options).map(([key, value]) => (
+                Object.entries(question.options as Record<string, string>).map(([key, value]) => (
                   <div
                     key={key}
                     className={`flex items-center gap-6 p-8 rounded-3xl border-4 transition-all cursor-pointer
