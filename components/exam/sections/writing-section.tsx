@@ -127,6 +127,12 @@ export default function WritingSection({ section, userId, examAttemptId }: any) 
   const wordCount = currentResponse.trim().split(/\s+/).filter(Boolean).length;
   const prompt = prompts[currentTask];
 
+  // SAFE VALUES — TypeScript is now happy
+  const minWords = prompt?.min_word_count ?? 0;
+  const maxWords = prompt?.max_word_count ?? minWords * 1.5;
+  const targetWords = maxWords > 0 ? maxWords : 300;
+  const progressPercentage = Math.min((wordCount / targetWords) * 100, 100);
+
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 flex items-center justify-center p-8">
@@ -148,7 +154,7 @@ export default function WritingSection({ section, userId, examAttemptId }: any) 
     <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 font-Coolvetica px-4 py-8">
       <div className="max-w-5xl mx-auto space-y-12">
 
-        {/* HERO TIMER — BLOOD-RED WHEN CRITICAL */}
+        {/* HERO TIMER */}
         <div className={`fixed top-0 left-0 right-0 z-50 transition-all duration-1000 ${isCritical ? "bg-gradient-to-r from-[#ED4137] to-red-700 shadow-2xl animate-pulse" : "bg-gradient-to-r from-[#0C1E46] to-[#0a1838]"}`}>
           <div className="container mx-auto px-6 py-6 flex items-center justify-between text-white">
             <div className="flex items-center gap-6">
@@ -170,7 +176,7 @@ export default function WritingSection({ section, userId, examAttemptId }: any) 
 
         <div className="pt-48" />
 
-        {/* TASK NAVIGATION — EPIC */}
+        {/* TASK NAVIGATION */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
           {prompts.map((p, i) => (
             <button
@@ -191,7 +197,7 @@ export default function WritingSection({ section, userId, examAttemptId }: any) 
           ))}
         </div>
 
-        {/* CURRENT PROMPT — CINEMATIC */}
+        {/* CURRENT PROMPT */}
         <Card className="bg-gradient-to-r from-[#0C1E46] to-[#0a1838] text-white shadow-4xl border-4 border-white/30">
           <CardHeader className="text-center py-16">
             <Crown className="w-24 h-24 mx-auto mb-8 text-yellow-400" />
@@ -204,28 +210,28 @@ export default function WritingSection({ section, userId, examAttemptId }: any) 
           </CardContent>
         </Card>
 
-        {/* WORD COUNT + PROGRESS */}
-        {prompt && (prompt.min_word_count || prompt.max_word_count) && (
+        {/* WORD COUNT + PROGRESS — FULLY TYPE-SAFE */}
+        {(prompt?.min_word_count || prompt?.max_word_count) && (
           <div className="bg-white/95 backdrop-blur-xl rounded-3xl shadow-3xl p-10 border-4 border-[#B0CCFE]">
             <div className="flex items-center justify-between mb-6">
               <p className="text-4xl font-bold text-[#0C1E46]">MOT COMPTEUR</p>
-              <p className={`text-8xl font-black ${wordCount >= (prompt.min_word_count || 0) ? "text-emerald-600" : "text-red-600"}`}>
+              <p className={`text-8xl font-black ${wordCount >= minWords ? "text-emerald-600" : "text-red-600"}`}>
                 {wordCount}
               </p>
             </div>
             <div className="h-12 bg-gray-200 rounded-full overflow-hidden shadow-inner">
               <div
-                className={`h-full transition-all duration-1000 ${wordCount >= (prompt.min_word_count || 0) ? "bg-gradient-to-r from-emerald-500 to-green-600" : "bg-gradient-to-r from-red-500 to-rose-600"}`}
-                style={{ width: `${Math.min((wordCount / (prompt.max_word_count || prompt.min_word_count * 1.5 || 300)) * 100, 100)}%` }}
+                className={`h-full transition-all duration-1000 ${wordCount >= minWords ? "bg-gradient-to-r from-emerald-500 to-green-600" : "bg-gradient-to-r from-red-500 to-rose-600"}`}
+                style={{ width: `${progressPercentage}%` }}
               />
             </div>
             <p className="text-center mt-6 text-2xl text-gray-700">
-              Objectif: {prompt.min_word_count || 0}–{prompt.max_word_count || "∞"} mots
+              Objectif: {minWords}–{maxWords > 0 ? maxWords : "∞"} mots
             </p>
           </div>
         )}
 
-        {/* FRENCH ACCENT BAR — LEGENDARY */}
+        {/* FRENCH ACCENT BAR */}
         <Card className="bg-gradient-to-r from-purple-600 to-indigo-700 text-white shadow-3xl">
           <CardHeader className="text-center py-8">
             <p className="text-4xl font-black">CLAVIER FRANÇAIS — CLIQUEZ POUR INSÉRER</p>
@@ -243,7 +249,7 @@ export default function WritingSection({ section, userId, examAttemptId }: any) 
           </CardContent>
         </Card>
 
-        {/* TEXTAREA — THE BATTLEFIELD */}
+        {/* TEXTAREA */}
         <Card className="bg-white/95 backdrop-blur-xl shadow-4xl border-8 border-[#B0CCFE] rounded-3xl overflow-hidden">
           <CardContent className="p-0">
             <Textarea
