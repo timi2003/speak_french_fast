@@ -58,59 +58,70 @@ export default function ModuleConfig() {
 
   const getConfig = (module: string) => configs.find((c) => c.module === module) || {};
 
+  const updateLocalConfig = (module: string, field: string, value: any) => {
+    setConfigs((prev) =>
+      prev.map((c) => (c.module === module ? { ...c, [field]: value } : c))
+    );
+  };
+
   if (loading) {
     return (
-      <div className="p-8 text-center">
-        <p className="text-lg text-gray-600">Loading module settings...</p>
+      <div className="flex items-center justify-center min-h-96">
+        <p className="text-xl text-gray-600 animate-pulse">Loading module settings...</p>
       </div>
     );
   }
 
   return (
-    <div className="space-y-10">
+    <div className="w-full space-y-8 px-4 sm:px-6 lg:px-8">
       <Tabs defaultValue="listening" className="w-full">
-        <TabsList className="grid grid-cols-2 md:grid-cols-4 w-full h-16 bg-white/90 backdrop-blur-md shadow-lg rounded-xl border border-gray-200">
+        {/* RESPONSIVE TABS — Stacked on mobile, horizontal on larger */}
+        <TabsList className="grid grid-cols-2 sm:grid-cols-4 w-full h-auto min-h-16 bg-white/90 backdrop-blur-xl shadow-2xl rounded-2xl border border-gray-200/50 p-2 gap-2">
           {MODULES.map((mod) => {
             const Icon = mod.icon;
             return (
               <TabsTrigger
                 key={mod.id}
                 value={mod.id}
-                className="text-sm md:text-base font-medium data-[state=active]:bg-[#0C1E46] data-[state=active]:text-white flex items-center justify-center gap-2"
+                className="flex flex-col sm:flex-row items-center justify-center gap-2 py-4 px-3 text-xs sm:text-sm md:text-base font-bold data-[state=active]:bg-[#0C1E46] data-[state=active]:text-white rounded-xl transition-all"
               >
-                <Icon className="w-5 h-5" />
-                <span className="hidden sm:inline">{mod.name}</span>
+                <Icon className="w-6 h-6 sm:w-5 sm:h-5" />
+                <span className="hidden xxs:inline sm:inline">{mod.name}</span>
+                <span className="xxs:hidden text-xs">{mod.name[0]}</span>
               </TabsTrigger>
             );
           })}
         </TabsList>
 
+        {/* CONTENT — Fully responsive */}
         {MODULES.map((mod) => {
           const config = getConfig(mod.id);
           const Icon = mod.icon;
 
           return (
-            <TabsContent key={mod.id} value={mod.id} className="mt-6">
-              <Card className="border-0 shadow-xl overflow-hidden">
-                <CardHeader className={`bg-gradient-to-r ${mod.color} text-white py-10`}>
-                  <div className="flex items-center justify-center gap-6">
-                    <Icon className="w-16 h-16" />
-                    <div className="text-center">
-                      <CardTitle className="text-3xl md:text-4xl font-bold">
-                        {mod.name} Module Configuration
+            <TabsContent key={mod.id} value={mod.id} className="mt-8">
+              <Card className="border-0 shadow-2xl overflow-hidden rounded-3xl bg-white/95 backdrop-blur-xl">
+                {/* Header — Beautiful gradient */}
+                <CardHeader className={`bg-gradient-to-r ${mod.color} text-white py-10 sm:py-12 px-6`}>
+                  <div className="flex flex-col sm:flex-row items-center justify-center gap-6 text-center sm:text-left">
+                    <Icon className="w-20 h-20 sm:w-24 sm:h-24" />
+                    <div>
+                      <CardTitle className="text-3xl sm:text-4xl md:text-5xl font-black leading-tight">
+                        {mod.name} Module
                       </CardTitle>
-                      <p className="text-lg mt-2 opacity-90">
-                        Fine-tune the experience for Nigerian learners
+                      <p className="text-lg sm:text-xl mt-3 opacity-90 font-medium">
+                        Configure experience for Nigerian learners
                       </p>
                     </div>
                   </div>
                 </CardHeader>
 
-                <CardContent className="p-8 bg-white space-y-8">
+                <CardContent className="p-6 sm:p-8 lg:p-12 space-y-10 bg-gradient-to-b from-white to-gray-50">
+                  {/* Grid — 1 col on mobile, 2 on md+ */}
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                     {/* Timer */}
-                    <div className="space-y-3">
-                      <Label className="text-lg font-semibold text-[#0C1E46]">
+                    <div className="space-y-4">
+                      <Label className="text-lg sm:text-xl font-bold text-[#0C1E46] flex items-center gap-2">
                         Exam Duration (minutes)
                       </Label>
                       <Input
@@ -118,19 +129,17 @@ export default function ModuleConfig() {
                         min="10"
                         max="180"
                         value={config.timer_minutes || 45}
-                        onChange={(e) => {
-                          const newConfigs = configs.map((c) =>
-                            c.module === mod.id ? { ...c, timer_minutes: Number(e.target.value) } : c
-                          );
-                          setConfigs(newConfigs);
-                        }}
-                        className="h-14 text-lg border-2 rounded-xl focus:border-[#0C1E46]"
+                        onChange={(e) =>
+                          updateLocalConfig(mod.id, "timer_minutes", Number(e.target.value))
+                        }
+                        className="h-14 sm:h-16 text-xl border-2 rounded-2xl focus:border-[#0C1E46] focus:ring-4 focus:ring-[#B0CCFE]/30"
+                        placeholder="45"
                       />
                     </div>
 
-                    {/* Number of Questions */}
-                    <div className="space-y-3">
-                      <Label className="text-lg font-semibold text-[#0C1E46]">
+                    {/* Questions */}
+                    <div className="space-y-4">
+                      <Label className="text-lg sm:text-xl font-bold text-[#0C1E46] flex items-center gap-2">
                         Number of Questions
                       </Label>
                       <Input
@@ -138,21 +147,19 @@ export default function ModuleConfig() {
                         min="5"
                         max="50"
                         value={config.number_of_questions || 20}
-                        onChange={(e) => {
-                          const newConfigs = configs.map((c) =>
-                            c.module === mod.id ? { ...c, number_of_questions: Number(e.target.value) } : c
-                          );
-                          setConfigs(newConfigs);
-                        }}
-                        className="h-14 text-lg border-2 rounded-xl focus:border-[#0C1E46]"
+                        onChange={(e) =>
+                          updateLocalConfig(mod.id, "number_of_questions", Number(e.target.value))
+                        }
+                        className="h-14 sm:h-16 text-xl border-2 rounded-2xl focus:border-[#0C1E46] focus:ring-4 focus:ring-[#B0CCFE]/30"
+                        placeholder="20"
                       />
                     </div>
                   </div>
 
                   {/* Listening: Replays */}
                   {mod.id === "listening" && (
-                    <div className="space-y-3">
-                      <Label className="text-lg font-semibold text-[#0C1E46]">
+                    <div className="space-y-4">
+                      <Label className="text-lg sm:text-xl font-bold text-[#0C1E46]">
                         Audio Replays Allowed
                       </Label>
                       <Input
@@ -160,38 +167,33 @@ export default function ModuleConfig() {
                         min="1"
                         max="5"
                         value={config.allow_replays || 3}
-                        onChange={(e) => {
-                          const newConfigs = configs.map((c) =>
-                            c.module === mod.id ? { ...c, allow_replays: Number(e.target.value) } : c
-                          );
-                          setConfigs(newConfigs);
-                        }}
-                        className="h-14 text-lg border-2 rounded-xl focus:border-[#0C1E46]"
+                        onChange={(e) =>
+                          updateLocalConfig(mod.id, "allow_replays", Number(e.target.value))
+                        }
+                        className="h-14 sm:h-16 text-xl border-2 rounded-2xl focus:border-[#0C1E46] focus:ring-4 focus:ring-[#B0CCFE]/30"
+                        placeholder="3"
                       />
                     </div>
                   )}
 
                   {/* Instructions */}
-                  <div className="space-y-3">
-                    <Label className="text-lg font-semibold text-[#0C1E46]">
+                  <div className="space-y-4">
+                    <Label className="text-lg sm:text-xl font-bold text-[#0C1E46]">
                       Instructions for Students
                     </Label>
                     <Textarea
                       value={config.instructions || ""}
-                      onChange={(e) => {
-                        const newConfigs = configs.map((c) =>
-                          c.module === mod.id ? { ...c, instructions: e.target.value } : c
-                        );
-                        setConfigs(newConfigs);
-                      }}
-                      placeholder="Enter clear instructions students will see before starting..."
-                      rows={5}
-                      className="text-base resize-none border-2 rounded-xl focus:border-[#0C1E46]"
+                      onChange={(e) =>
+                        updateLocalConfig(mod.id, "instructions", e.target.value)
+                      }
+                      placeholder="Write clear instructions students will see before starting this module..."
+                      rows={6}
+                      className="text-base sm:text-lg resize-none border-2 rounded-2xl focus:border-[#0C1E46] focus:ring-4 focus:ring-[#B0CCFE]/30 p-5"
                     />
                   </div>
 
-                  {/* Save Button */}
-                  <div className="pt-6">
+                  {/* Save Button — Full width, epic */}
+                  <div className="pt-8">
                     <Button
                       onClick={() =>
                         handleUpdateConfig(config.id, {
@@ -202,12 +204,19 @@ export default function ModuleConfig() {
                         })
                       }
                       disabled={updating === config.id}
-                      className="w-full h-16 text-xl font-bold bg-[#ED4137] hover:bg-red-600 shadow-xl rounded-xl"
+                      className="w-full h-16 sm:h-20 text-xl sm:text-2xl font-black bg-[#ED4137] hover:bg-red-600 shadow-2xl rounded-2xl flex items-center justify-center gap-4 transition-all transform hover:scale-105"
                     >
-                      <Save className="w-6 h-6 mr-3" />
-                      {updating === config.id ? "Saving Changes..." : "Save Module Configuration"}
+                      <Save className="w-8 h-8" />
+                      {updating === config.id ? "Saving Changes..." : "Save Configuration"}
                     </Button>
                   </div>
+
+                  {/* Success Hint */}
+                  {updating === config.id && (
+                    <p className="text-center text-green-600 font-bold text-lg animate-pulse">
+                      Changes saved successfully!
+                    </p>
+                  )}
                 </CardContent>
               </Card>
             </TabsContent>
