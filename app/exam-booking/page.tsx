@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { createClient } from "@/lib/supabase/client";
+import { sql } from "@supabase/postgrest-js";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -35,6 +36,7 @@ export default function ExamBookingPage() {
   const [bookingInProgress, setBookingInProgress] = useState(false);
   const router = useRouter();
 
+  // Load user, exams, and existing bookings on mount
   useEffect(() => {
     const init = async () => {
       const supabase = createClient();
@@ -53,13 +55,16 @@ export default function ExamBookingPage() {
             .select("*")
             .eq("exam_type", "end_of_cycle")
             .order("created_at", { ascending: false }),
-          supabase.from("exam_bookings").select("*").eq("student_id", authUser.id),
+          supabase
+            .from("exam_bookings")
+            .select("*")
+            .eq("student_id", authUser.id),
         ]);
 
         setExams(examsData || []);
         setBookings(bookingsData || []);
       } catch (err) {
-        console.error(err);
+        console.error("Init error:", err);
       } finally {
         setLoading(false);
       }
@@ -68,9 +73,11 @@ export default function ExamBookingPage() {
     init();
   }, [router]);
 
+  // Load available slots for selected exam
   const loadSlots = async (examId: string) => {
     setSelectedExam(examId);
     setSelectedSlot(null);
+    setAvailableSlots([]);
 
     const supabase = createClient();
     try {
@@ -93,17 +100,17 @@ export default function ExamBookingPage() {
         const slots = data.map((s: any) => ({
           ...s,
           examiner_name:
-            `${s.profiles?.first_name || ""} ${s.profiles?.last_name || ""}`.trim() ||
-            "TBD",
+            `${s.profiles?.first_name || ""} ${s.profiles?.last_name || ""}`.trim() || "TBD",
           available: s.booked_count < s.capacity,
         }));
         setAvailableSlots(slots);
       }
     } catch (err) {
-      console.error(err);
+      console.error("Load slots error:", err);
     }
   };
 
+  // Book a slot
   const bookSlot = async (slotId: string) => {
     if (!selectedExam || !user) return;
 
@@ -111,7 +118,7 @@ export default function ExamBookingPage() {
     const supabase = createClient();
 
     try {
-      // 1. Create the booking
+      // 1. Create booking
       const { data: newBooking, error: bookingError } = await supabase
         .from("exam_bookings")
         .insert({
@@ -126,10 +133,10 @@ export default function ExamBookingPage() {
 
       if (bookingError) throw bookingError;
 
-      // 2. Atomically increment booked_count
+      // 2. Increment booked_count safely
       const { error: incError } = await supabase
         .from("exam_slot_availability")
-        .increment("booked_count", 1) // ← Fixed: modern Supabase v2 syntax
+        .update({ booked_count: sql`booked_count + 1` })
         .eq("id", slotId);
 
       if (incError) throw incError;
@@ -140,38 +147,35 @@ export default function ExamBookingPage() {
       setAvailableSlots([]);
       setSelectedExam(null);
     } catch (err: any) {
-      console.error("Booking error:", err);
-      alert("Failed to book the slot. It might have just been taken. Please try again.");
+      console.error("Booking failed:", err);
+      alert("Slot taken or unavailable. Please try another.");
     } finally {
       setBookingInProgress(false);
     }
   };
 
+  // Cancel existing booking
   const cancelBooking = async (bookingId: string, slotId: string) => {
     setBookingInProgress(true);
     const supabase = createClient();
 
     try {
-      // Update booking status + decrement count in parallel
-      const [updateBookingRes, decrementRes] = await Promise.all([
-        supabase
-          .from("exam_bookings")
-          .update({ status: "cancelled" })
-          .eq("id", bookingId),
+      const [{ error: updateError }, { error: decError }] = await Promise.all([
+        supabase.from("exam_bookings").update({ status: "cancelled" }).eq("id", bookingId),
         supabase
           .from("exam_slot_availability")
-          .decrement("booked_count", 1) // ← Fixed: modern Supabase v2 syntax
+          .update({ booked_count: sql`booked_count - 1` })
           .eq("id", slotId),
       ]);
 
-      if (updateBookingRes.error) throw updateBookingRes.error;
-      if (decrementRes.error) throw decrementRes.error;
+      if (updateError) throw updateError;
+      if (decError) throw decError;
 
       setBookings(bookings.filter((b) => b.id !== bookingId));
       alert("Booking cancelled successfully.");
     } catch (err: any) {
-      console.error("Cancel error:", err);
-      alert("Failed to cancel booking. Please try again.");
+      console.error("Cancel failed:", err);
+      alert("Failed to cancel. Please try again.");
     } finally {
       setBookingInProgress(false);
     }
@@ -180,9 +184,7 @@ export default function ExamBookingPage() {
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center">
-        <p className="text-xl font-Coolvetica text-[#0C1E46]">
-          Loading your exam schedule...
-        </p>
+        <p className="text-xl font-Coolvetica text-[#0C1E46]">Loading your exam schedule...</p>
       </div>
     );
   }
@@ -192,19 +194,16 @@ export default function ExamBookingPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 font-Coolvetica px-4 py-8">
       <div className="max-w-4xl mx-auto space-y-10">
-
-        {/* HERO */}
+        {/* Hero */}
         <div className="text-center">
           <div className="inline-block bg-gradient-to-r from-[#0C1E46] to-[#0a1838] text-white px-8 py-8 rounded-2xl shadow-xl">
             <Calendar className="w-16 h-16 md:w-20 md:h-20 mx-auto mb-4" />
             <h1 className="text-3xl md:text-5xl font-bold">Book Your Final Exam</h1>
-            <p className="text-blue-100 text-base md:text-xl mt-3">
-              Your gateway to France starts here
-            </p>
+            <p className="text-blue-100 text-base md:text-xl mt-3">Your gateway to France starts here</p>
           </div>
         </div>
 
-        {/* ACTIVE BOOKING CARD */}
+        {/* Active Booking */}
         {activeBooking && (
           <Card className="bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-green-300 shadow-lg">
             <CardContent className="pt-8">
@@ -238,7 +237,7 @@ export default function ExamBookingPage() {
           </Card>
         )}
 
-        {/* EXAM SELECTION */}
+        {/* Exam Selection */}
         {!selectedExam && exams.length > 0 && (
           <div>
             <h2 className="text-2xl md:text-3xl font-bold text-[#0C1E46] mb-6 text-center">
@@ -266,13 +265,11 @@ export default function ExamBookingPage() {
           </div>
         )}
 
-        {/* SLOT SELECTION */}
+        {/* Slot Selection */}
         {selectedExam && availableSlots.length > 0 && (
           <div>
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-2xl md:text-3xl font-bold text-[#0C1E46]">
-                Available Slots
-              </h2>
+              <h2 className="text-2xl md:text-3xl font-bold text-[#0C1E46]">Available Slots</h2>
               <Button
                 variant="ghost"
                 onClick={() => {
@@ -310,15 +307,8 @@ export default function ExamBookingPage() {
                             })}
                           </p>
                           <p className="text-sm text-gray-600">
-                            {new Date(slot.start_time).toLocaleTimeString([], {
-                              hour: "2-digit",
-                              minute: "2-digit",
-                            })}{" "}
-                            -{" "}
-                            {new Date(slot.end_time).toLocaleTimeString([], {
-                              hour: "2-digit",
-                              minute: "2-digit",
-                            })}
+                            {new Date(slot.start_time).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })} -{" "}
+                            {new Date(slot.end_time).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
                           </p>
                         </div>
                       </div>
@@ -353,7 +343,7 @@ export default function ExamBookingPage() {
           </div>
         )}
 
-        {/* ALL SLOTS FULL */}
+        {/* All Slots Full */}
         {selectedExam && availableSlots.length > 0 && availableSlots.every((s) => !s.available) && (
           <Card className="bg-amber-50 border-2 border-amber-300">
             <CardContent className="pt-8 text-center">
@@ -364,7 +354,7 @@ export default function ExamBookingPage() {
           </Card>
         )}
 
-        {/* NO EXAMS */}
+        {/* No Exams */}
         {exams.length === 0 && !selectedExam && (
           <Card className="bg-gray-50 border-2 border-gray-300">
             <CardContent className="pt-12 text-center">
@@ -375,7 +365,7 @@ export default function ExamBookingPage() {
           </Card>
         )}
 
-        {/* MOTIVATIONAL CLOSE */}
+        {/* Motivational Footer */}
         <div className="text-center mt-16">
           <div className="bg-gradient-to-r from-[#0C1E46] via-[#ED4137] to-purple-700 text-white py-12 px-8 rounded-2xl shadow-2xl">
             <p className="text-3xl md:text-5xl font-bold">One exam. One step.</p>
