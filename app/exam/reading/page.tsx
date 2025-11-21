@@ -68,7 +68,7 @@ export default function ReadingExamPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           module_name: "reading",
-          questions_attempted: questionsAttempted,
+          questionsAttempted,
           time_taken_seconds: 2700 - timeLeft,
         }),
       });
@@ -76,11 +76,12 @@ export default function ReadingExamPage() {
       if (response.ok) {
         router.push("/exam/reading/results");
       } else {
-        alert("Failed to submit. Please try again.");
+        const err = await response.json();
+        alert(err.message || "Failed to submit exam.");
       }
     } catch (error) {
       console.error("[SFF] Submission error:", error);
-      alert("Network error. Check your connection.");
+      alert("Network error. Please try again.");
     } finally {
       setIsSubmitting(false);
     }
@@ -99,9 +100,12 @@ export default function ReadingExamPage() {
   if (questions.length === 0) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
-        <Card className="text-center p-10">
+        <Card className="text-center p-10 bg-white/90 backdrop-blur shadow-2xl">
+          <BookOpen className="w-24 h-24 mx-auto mb-6 text-[#0C1E46]" />
           <p className="text-xl text-gray-600 mb-6">No reading questions available yet.</p>
-          <Button onClick={() => router.push("/dashboard")}>Back to Dashboard</Button>
+          <Button onClick={() => router.push("/dashboard")} className="bg-[#0C1E46] hover:bg-[#0a1838]">
+            Back to Dashboard
+          </Button>
         </Card>
       </div>
     );
@@ -119,94 +123,94 @@ export default function ReadingExamPage() {
 
         {/* HERO HEADER */}
         <div className="text-center">
-           <div className="inline-block bg-gradient-to-r from-[#0C1E46] to-[#0a1838] text-white px-8 py-8 rounded-3xl shadow-2xl">
-            <BookOpen className="w-20 h-20 mx-auto mb-6" />
-            <h1 className="text-4xl md:text-6xl font-bold">Reading Exam</h1>
-            <p className="text-blue-100 text-xl md:text-2xl mt-4">
+          <div className="inline-block bg-gradient-to-r from-[#0C1E46] to-[#0a1838] text-white px-8 py-10 rounded-3xl shadow-3xl">
+            <BookOpen className="w-24 h-24 mx-auto mb-6" />
+            <h1 className="text-5xl md:text-7xl font-bold">Reading Exam</h1>
+            <p className="text-blue-100 text-xl md:text-3xl mt-6">
               Understand French like a native
             </p>
           </div>
         </div>
 
         {/* PROGRESS BAR */}
-        <div className="bg-white/80 backdrop-blur rounded-2xl shadow-xl p-6">
-          <div className="flex justify-between items-center mb-4">
-            <div className="flex items-center gap-3">
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => router.back()}
-                className="text-[#0C1E46] hover:bg-[#B0CCFE]/20"
-              >
-                <ArrowLeft className="w-5 h-5 mr-2" /> Back
-              </Button>
-            </div>
+        <div className="bg-white/90 backdrop-blur-xl rounded-3xl shadow-2xl p-6">
+          <div className="flex justify-between items-center mb-6">
+            <Button
+              variant="ghost"
+              size="lg"
+              onClick={() => router.back()}
+              className="text-[#0C1E46] hover:bg-[#B0CCFE]/30"
+            >
+              <ArrowLeft className="w-6 h-6 mr-3" /> Back
+            </Button>
+
             <div className="text-center">
-              <p className="text-2xl font-bold text-[#0C1E46]">
-                Question {currentQuestion + 1} / {questions.length}
+              <p className="text-3xl font-bold text-[#0C1E46]">
+                {currentQuestion + 1} / {questions.length}
               </p>
-              <p className="text-sm text-gray-600 mt-1">
-                {answeredCount} answered • {questions.length - answeredCount} remaining
+              <p className="text-lg text-gray-600 mt-1">
+                {answeredCount} answered • {questions.length - answeredCount} to go
               </p>
             </div>
-            <div className="w-20" /> {/* Spacer */}
+
+            <div className="w-32" />
           </div>
 
-          <div className="h-6 bg-gray-200 rounded-full overflow-hidden">
+          <div className="h-8 bg-gray-200 rounded-full overflow-hidden shadow-inner">
             <div
-              className="h-full bg-gradient-to-r from-[#ED4137] to-orange-600 transition-all duration-700 ease-out rounded-full shadow-lg"
+              className="h-full bg-gradient-to-r from-[#ED4137] via-orange-500 to-pink-600 transition-all duration-1000 ease-out rounded-full shadow-lg"
               style={{ width: `${progress}%` }}
             />
           </div>
         </div>
 
-        {/* QUESTION CARD */}
-        <Card className="bg-white/95 backdrop-blur-xl shadow-2xl border-4 border-[#B0CCFE] rounded-3xl overflow-hidden">
-          <CardHeader className="bg-gradient-to-r from-[#0C1E46] to-[#0a1838] text-white py-8">
-            <CardTitle className="text-2xl md:text-3xl font-bold flex items-center gap-4 justify-center">
-              <Trophy className="w-10 h-10 text-yellow-400" />
+        {/* MAIN QUESTION CARD */}
+        <Card className="bg-white/95 backdrop-blur-xl shadow-3xl border-4 border-[#B0CCFE] rounded-3xl overflow-hidden">
+          <CardHeader className="bg-gradient-to-r from-[#0C1E46] to-[#0a1838] text-white py-10">
+            <CardTitle className="text-3xl md:text-4xl font-bold text-center flex items-center justify-center gap-4">
+              <Trophy className="w-12 h-12 text-yellow-400" />
               Question {currentQuestion + 1}
             </CardTitle>
           </CardHeader>
 
-          <CardContent className="pt-10 pb-12 px-6 md:px-10 space-y-10">
+          <CardContent className="pt-12 pb-16 px-6 md:px-12 space-y-12">
 
-            {/* Passage (if exists) */}
-            {question?.passage && (
-              <div className="bg-gradient-to-r from-blue-50 to-indigo-50 p-8 rounded-2xl border-2 border-blue-200">
-                <p className="text-lg md:text-xl leading-relaxed text-[#0C1E46] italic font-medium">
-                  {question.passage}
+            {/* READING PASSAGE */}
+            {question?.passage_text && (
+              <div className="bg-gradient-to-r from-blue-50 to-indigo-50 p-10 rounded-3xl border-4 border-blue-200 shadow-2xl">
+                <p className="text-lg md:text-xl leading-relaxed text-[#0C1E46] font-medium whitespace-pre-wrap">
+                  {question.passage_text}
                 </p>
               </div>
             )}
 
-            {/* Question Text */}
+            {/* QUESTION TEXT */}
             <div className="text-center">
-              <p className="text-2xl md:text-3xl font-bold text-[#0C1E46] leading-relaxed">
+              <p className="text-2xl md:text-4xl font-bold text-[#0C1E46] leading-relaxed">
                 {question?.question_text}
               </p>
             </div>
 
-            {/* Options */}
+            {/* ANSWER OPTIONS — FULLY TYPE-SAFE */}
             <RadioGroup
               value={answers[question?.id] || ""}
               onValueChange={(value) => handleAnswerChange(question?.id, value)}
-              className="text-[#0C1E46] space-y-5"
+              className="space-y-6"
             >
               {question?.options &&
-                Object.entries(question.options).map(([key, value]) => (
+                Object.entries(question.options as Record<string, string>).map(([key, value]) => (
                   <div
                     key={key}
-                    className={`flex items-center gap-5 p-6 rounded-2xl border-4 transition-all cursor-pointer
+                    className={`flex items-center gap-6 p-8 rounded-3xl border-4 transition-all cursor-pointer
                       ${answers[question.id] === key
-                        ? "border-[#ED4137] bg-red-50 shadow-xl scale-105"
-                        : "border-[#0C1E46] bg-white hover:border-[#B0CCFE] hover:shadow-lg"
+                        ? "border-[#ED4137] bg-red-50 shadow-2xl scale-105"
+                        : "border-gray-300 bg-white hover:border-[#B0CCFE] hover:shadow-xl"
                       }`}
                   >
-                    <RadioGroupItem value={key} id={key} className="border-[#0C1E46] w-7 h-7" />
+                    <RadioGroupItem value={key} id={key} className="w-8 h-8" />
                     <Label
                       htmlFor={key}
-                      className="text-lg md:text-xl font-medium cursor-pointer flex-1"
+                      className="text-xl md:text-2xl font-medium cursor-pointer flex-1"
                     >
                       {value}
                     </Label>
@@ -214,16 +218,16 @@ export default function ReadingExamPage() {
                 ))}
             </RadioGroup>
 
-            {/* Navigation */}
-            <div className="flex justify-between items-center mt-12">
+            {/* NAVIGATION */}
+            <div className="flex justify-between items-center mt-16">
               <Button
                 variant="outline"
                 size="lg"
                 onClick={() => setCurrentQuestion(Math.max(0, currentQuestion - 1))}
                 disabled={currentQuestion === 0}
-                className="px-8 h-14 text-lg border-2 border-[#0C1E46] hover:bg-[#0C1E46] hover:text-white font-bold"
+                className="px-10 h-16 text-xl border-4 border-[#0C1E46] hover:bg-[#0C1E46] hover:text-white font-bold"
               >
-                <ChevronLeft className="w-6 h-6 mr-2" /> Previous
+                <ChevronLeft className="w-7 h-7 mr-3" /> Previous
               </Button>
 
               {currentQuestion === questions.length - 1 ? (
@@ -231,22 +235,37 @@ export default function ReadingExamPage() {
                   size="lg"
                   onClick={submitExam}
                   disabled={isSubmitting || answeredCount < questions.length}
-                  className="px-10 h-16 text-xl font-bold bg-[#ED4137] hover:bg-red-600 shadow-2xl"
+                  className="px-12 h-20 text-2xl font-bold bg-[#ED4137] hover:bg-red-600 shadow-3xl"
                 >
-                  {isSubmitting ? "Submitting..." : "Submit Exam"}
+                  {isSubmitting ? "Submitting..." : "Submit & See Results"}
                 </Button>
               ) : (
                 <Button
                   size="lg"
                   onClick={() => setCurrentQuestion(currentQuestion + 1)}
-                  className="px-8 h-14 text-lg bg-[#0C1E46] hover:bg-[#0a1838] text-white font-bold"
+                  className="px-10 h-16 text-xl bg-[#0C1E46] hover:bg-[#0a1838] text-white font-bold"
                 >
-                  Next <ChevronRight className="w-6 h-6 ml-2" />
+                  Next Question <ChevronRight className="w-7 h-7 ml-3" />
                 </Button>
               )}
             </div>
           </CardContent>
         </Card>
+
+        {/* FINAL MOTIVATION */}
+        <div className="text-center">
+          <div className="bg-gradient-to-r from-[#0C1E46] via-[#ED4137] to-purple-700 text-white py-16 px-10 rounded-3xl shadow-3xl">
+            <p className="text-5xl md:text-7xl font-bold">
+              Every word you read
+            </p>
+            <p className="text-5xl md:text-7xl font-bold mt-8 text-[#B0CCFE]">
+              Is a street in Paris
+            </p>
+            <p className="text-3xl mt-12 opacity-90">
+              You’re not just reading — you’re walking
+            </p>
+          </div>
+        </div>
       </main>
     </div>
   );
