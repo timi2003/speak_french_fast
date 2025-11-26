@@ -6,7 +6,7 @@ export async function POST(
   context: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id } = await context.params; // ✅ MUST await params in Next.js 16
+    const { id } = await context.params; // MUST await params in Next.js 16
 
     const supabase = await createClient();
 

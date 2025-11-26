@@ -1,23 +1,28 @@
-import { createClient } from "@/lib/supabase/server"
-import { type NextRequest, NextResponse } from "next/server"
+import { createClient } from "@/lib/supabase/server";
+import { type NextRequest, NextResponse } from "next/server";
 
-export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
+export async function GET(
+  request: NextRequest,
+  context: { params: Promise<{ id: string }> }
+) {
   try {
-    const supabase = await createClient()
+    const { id } = await context.params; // ✅ Must await params in Next.js 16
+
+    const supabase = await createClient();
 
     const {
       data: { user },
-    } = await supabase.auth.getUser()
+    } = await supabase.auth.getUser();
 
     if (!user) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const searchParams = request.nextUrl.searchParams
-    const attemptId = searchParams.get("attemptId")
+    const searchParams = request.nextUrl.searchParams;
+    const attemptId = searchParams.get("attemptId");
 
     if (!attemptId) {
-      return NextResponse.json({ error: "Missing attemptId" }, { status: 400 })
+      return NextResponse.json({ error: "Missing attemptId" }, { status: 400 });
     }
 
     // Fetch exam attempt
@@ -26,11 +31,11 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
       .select("*")
       .eq("id", attemptId)
       .eq("student_id", user.id)
-      .single()
+      .single();
 
-    if (attemptError) throw attemptError
+    if (attemptError) throw attemptError;
 
-    // Fetch all responses with question details
+    // Fetch all responses with question + section details
     const { data: responses, error: responsesError } = await supabase
       .from("student_responses")
       .select(`
@@ -52,51 +57,56 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
         )
       `)
       .eq("student_id", user.id)
-      .eq("exam_id", params.id)
+      .eq("exam_id", id); // ✅ Use awaited `id`
 
-    if (responsesError) throw responsesError
+    if (responsesError) throw responsesError;
 
-    // Group responses by section
+    // Group results by section
     const resultsBySection = responses.reduce((acc: any, response: any) => {
-      const sectionId = response.exam_section_id
+      const sectionId = response.exam_section_id;
+
       if (!acc[sectionId]) {
         acc[sectionId] = {
           section: response.exam_sections,
           responses: [],
           correct: 0,
           total: 0,
-        }
+        };
       }
 
       const isCorrect =
         response.questions.question_type === "mcq"
           ? response.questions.answer_options.some(
-              (opt: any) => opt.id === response.selected_answer_id && opt.is_correct,
+              (opt: any) =>
+                opt.id === response.selected_answer_id && opt.is_correct
             )
-          : null
+          : null;
 
       acc[sectionId].responses.push({
         ...response,
         isCorrect,
-      })
+      });
 
       if (response.questions.question_type === "mcq") {
-        acc[sectionId].total++
-        if (isCorrect) acc[sectionId].correct++
+        acc[sectionId].total++;
+        if (isCorrect) acc[sectionId].correct++;
       }
 
-      return acc
-    }, {})
+      return acc;
+    }, {});
 
     return NextResponse.json({
       attempt,
       resultsBySection,
-    })
+    });
   } catch (error) {
-    console.error("[GET_RESULTS]", error)
+    console.error("[GET_RESULTS]", error);
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : "Failed to fetch results" },
-      { status: 500 },
-    )
+      {
+        error:
+          error instanceof Error ? error.message : "Failed to fetch results",
+      },
+      { status: 500 }
+    );
   }
 }
