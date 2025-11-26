@@ -6,7 +6,7 @@ export async function POST(
   context: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id } = await context.params; // MUST await params in Next.js 16
+    const { id } = await context.params; // Next.js 16 — params is async
 
     const supabase = await createClient();
 
@@ -21,7 +21,7 @@ export async function POST(
     const body = await request.json();
     const { attemptId } = body;
 
-    // Fetch all student responses for this attempt
+    // Fetch responses with related questions + answer options
     const { data: responses, error: responsesError } = await supabase
       .from("student_responses")
       .select(`
@@ -36,30 +36,35 @@ export async function POST(
         )
       `)
       .eq("student_id", user.id)
-      .eq("exam_id", id); //  UPDATED: use awaited id
+      .eq("exam_id", id);
 
     if (responsesError) throw responsesError;
 
-    // Calculate score
     let correctCount = 0;
     let totalQuestions = 0;
 
     for (const response of responses) {
-      if (
-        response.questions.question_type === "mcq" ||
-        response.questions.question_type === "short_answer"
-      ) {
+      const question = response.questions?.[0]; // FIX: questions is an array
+
+      if (!question) continue; // safety guard
+
+      const { question_type, answer_options } = question;
+
+      // MCQ & short-answer grading
+      if (question_type === "mcq" || question_type === "short_answer") {
         totalQuestions++;
 
         if (response.selected_answer_id) {
-          const selectedOption = response.questions.answer_options.find(
+          const selectedOption = answer_options?.find(
             (opt: any) => opt.id === response.selected_answer_id
           );
 
           if (selectedOption?.is_correct) correctCount++;
         }
-      } else if (response.questions.question_type === "essay") {
-        // Essay questions await manual grading
+      }
+
+      // Essay requires manual grading
+      if (question_type === "essay") {
         totalQuestions++;
       }
     }
@@ -71,7 +76,6 @@ export async function POST(
 
     const cecrlLevel = calculateCECRLLevel(scorePercentage);
 
-    // Update exam attempt
     const { data: updatedAttempt, error: updateError } = await supabase
       .from("exam_attempts")
       .update({
@@ -95,17 +99,20 @@ export async function POST(
     });
   } catch (error) {
     console.error("[GRADE_EXAM]", error);
+
     return NextResponse.json(
       {
         error:
-          error instanceof Error ? error.message : "Failed to grade exam",
+          error instanceof Error
+            ? error.message
+            : "Failed to grade exam",
       },
       { status: 500 }
     );
   }
 }
 
-// Helper function to calculate CECRL level
+// CECRL level helper
 function calculateCECRLLevel(scorePercentage: number): string {
   if (scorePercentage < 20) return "A1";
   if (scorePercentage < 35) return "A2";
