@@ -30,7 +30,7 @@ Please provide:
 7. Specific Suggestions (actionable tips for better writing)
 
 Format your response as a structured evaluation.`,
-      maxTokens: 500,
+      max_tokens: 500, // ✅ FIXED
     })
 
     // Parse the AI feedback
