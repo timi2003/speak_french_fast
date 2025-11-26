@@ -1,8 +1,13 @@
 import { createClient } from "@/lib/supabase/server"
 import { type NextRequest, NextResponse } from "next/server"
 
-export async function POST(request: NextRequest, { params }: { params: { id: string } }) {
+export async function POST(
+  request: NextRequest,
+  context: { params: Promise<{ id: string }> }
+) {
   try {
+    const { id } = await context.params // ✅ FIX: params must be awaited in Next.js 16
+
     const supabase = await createClient()
 
     const {
@@ -16,33 +21,56 @@ export async function POST(request: NextRequest, { params }: { params: { id: str
     const body = await request.json()
     const { attemptId } = body
 
-    // Get current request IP
-    const forwarded = request.headers.get("x-forwarded-for")
-    const currentIp = forwarded ? forwarded.split(";")[0].trim() : request.headers.get("x-real-ip") || "unknown"
+    if (!attemptId) {
+      return NextResponse.json({ error: "Missing attemptId" }, { status: 400 })
+    }
 
-    // Get attempt's initial IP
+    // Verify this is the user's attempt
     const { data: attempt, error: fetchError } = await supabase
       .from("exam_attempts")
-      .select("ip_address, status")
+      .select("*")
       .eq("id", attemptId)
       .eq("student_id", user.id)
-      .eq("exam_id", params.id)
+      .eq("exam_id", id)
       .single()
 
     if (fetchError || !attempt) {
       return NextResponse.json({ error: "Attempt not found" }, { status: 404 })
     }
 
-    // Check if IP changed during exam (potential cheating indicator)
-    const ipChanged = attempt.ip_address !== currentIp && attempt.ip_address !== "unknown" && currentIp !== "unknown"
+    // Update attempt status to submitted
+    const { error: updateError } = await supabase
+      .from("exam_attempts")
+      .update({
+        status: "submitted",
+        end_time: new Date().toISOString(),
+      })
+      .eq("id", attemptId)
+
+    if (updateError) throw updateError
+
+    // Trigger grading logic
+    const gradeResponse = await fetch(
+      new URL(`/api/exams/${id}/grade`, request.url),
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ attemptId }),
+      }
+    )
+
+    const gradeResult = await gradeResponse.json()
 
     return NextResponse.json({
-      valid: true,
-      ipChanged,
-      warning: ipChanged ? "Your IP address has changed since starting the exam" : null,
+      success: true,
+      attemptId,
+      ...gradeResult,
     })
   } catch (error) {
-    console.error("[VALIDATE_ATTEMPT]", error)
-    return NextResponse.json({ error: error instanceof Error ? error.message : "Validation failed" }, { status: 500 })
+    console.error("[SUBMIT_EXAM]", error)
+    return NextResponse.json(
+      { error: error instanceof Error ? error.message : "Failed to submit exam" },
+      { status: 500 }
+    )
   }
 }
