@@ -10,7 +10,6 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Missing essay or question" }, { status: 400 })
     }
 
-    // Use AI SDK to grade the essay
     const { text: feedback } = await generateText({
       model: "openai/gpt-4-mini",
       prompt: `You are an expert French language teacher grading a student's written essay for a TEF/TCF exam.
@@ -30,10 +29,9 @@ Please provide:
 7. Specific Suggestions (actionable tips for better writing)
 
 Format your response as a structured evaluation.`,
-      max_tokens: 500, // ✅ FIXED
+      maxOutputTokens: 500, //  FINAL FIX
     })
 
-    // Parse the AI feedback
     const scoreMatch = feedback.match(/(\d+)/)
     const score = scoreMatch ? Number.parseInt(scoreMatch[1]) : 0
 
