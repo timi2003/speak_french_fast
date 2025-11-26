@@ -143,7 +143,7 @@ export default function EnhancedQuestionUpload() {
           <TabsTrigger
             key={key}
             value={key}
-            className="text-sm font-medium data-[state=active]:bg-[#0C1E46] data-[state=active]:text-white flex items-center gap-2"
+            className="text-[#0C1E46] text-sm font-medium data-[state=active]:bg-[#0C1E46] data-[state=active]:text-white flex items-center gap-2"
           >
             <Icon className="w-5 h-5" />
             <span className="hidden sm:inline">{label}</span>
@@ -182,10 +182,10 @@ export default function EnhancedQuestionUpload() {
 
         {/* Upload Form */}
         <Card className="shadow-xl border-0">
-          <CardHeader className={`bg-gradient-to-r ${currentModule.color} text-white rounded-t-xl py-8`}>
+          <CardHeader className={`bg-gradient-to-r ${currentModule.color} text-white rounded-t-xl py-6`}>
             <div className="flex items-center justify-center gap-4">
               <currentModule.icon className="w-12 h-12" />
-              <CardTitle className="text-2xl md:text-3xl font-bold">
+              <CardTitle className="text-xl md:text-2xl font-bold">
                 Add {currentModule.label} Question
               </CardTitle>
             </div>
@@ -196,23 +196,23 @@ export default function EnhancedQuestionUpload() {
               {/* Skill Type & Number */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-3">
-                  <Label className="text-base font-medium">Skill Type</Label>
+                  <Label className="text-[#0C1E46] font-medium">Skill Type</Label>
                   <Input
                     placeholder="e.g., Comprehension, Vocabulary"
                     value={formData.skill_type}
                     onChange={e => handleChange("skill_type", e.target.value)}
                     required
-                    className="h-12 text-base"
+                    className="text-[#0C1E46] h-12 text-base"
                   />
                 </div>
                 <div className="space-y-3">
-                  <Label className="text-base font-medium">Question Number</Label>
+                  <Label className="text-[#0C1E46] font-medium">Question Number</Label>
                   <Input
                     type="number"
                     min="1"
                     value={formData.question_number}
                     onChange={e => handleChange("question_number", +e.target.value)}
-                    className="h-12 text-base"
+                    className="h-12 text-[#0C1E46]"
                   />
                 </div>
               </div>
@@ -220,40 +220,40 @@ export default function EnhancedQuestionUpload() {
               {/* Module-Specific Fields */}
               {module === "listening" && (
                 <div className="space-y-3">
-                  <Label className="text-base font-medium">Audio URL (MP3)</Label>
+                  <Label className="text-[#0C1E46] font-medium">Audio URL (MP3)</Label>
                   <Input
                     type="url"
                     placeholder="https://example.com/audio.mp3"
                     value={formData.audio_url}
                     onChange={e => handleChange("audio_url", e.target.value)}
                     required
-                    className="h-12 text-base"
+                    className="h-12 text-[#0C1E46]"
                   />
                 </div>
               )}
 
               {module === "reading" && (
                 <div className="space-y-3">
-                  <Label className="text-base font-medium">Reading Passage</Label>
+                  <Label className="text-[#0C1E46] font-medium">Reading Passage</Label>
                   <Textarea
                     placeholder="Paste the full passage here..."
                     value={formData.passage_text}
                     onChange={e => handleChange("passage_text", e.target.value)}
                     required
                     rows={8}
-                    className="text-base resize-none"
+                    className="text-[#0C1E46] resize-none"
                   />
                 </div>
               )}
 
               {(module === "writing" || module === "speaking") && (
                 <div className="space-y-3">
-                  <Label className="text-base font-medium">Task Type</Label>
+                  <Label className="text-[#0C1E46] font-medium">Task Type</Label>
                   <Select value={formData.task_name} onValueChange={v => handleChange("task_name", v)}>
-                    <SelectTrigger className="h-12">
+                    <SelectTrigger className="text-[#0C1E46] bg-white h-12">
                       <SelectValue placeholder="Select task" />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className="bg-white text-[#0C1E46]">
                       <SelectItem value="Task 1">Task 1</SelectItem>
                       <SelectItem value="Task 2">Task 2</SelectItem>
                       <SelectItem value="Task 3">Task 3</SelectItem>
@@ -264,14 +264,14 @@ export default function EnhancedQuestionUpload() {
 
               {/* Question Text */}
               <div className="space-y-3">
-                <Label className="text-base font-medium">Question / Prompt</Label>
+                <Label className="text-[#0C1E46] font-medium">Question / Prompt</Label>
                 <Textarea
                   placeholder="Enter the question students will see..."
                   value={formData.question_text}
                   onChange={e => handleChange("question_text", e.target.value)}
                   required
                   rows={4}
-                  className="text-base resize-none"
+                  className="text-[#0C1E46] resize-none"
                 />
               </div>
 
@@ -279,17 +279,17 @@ export default function EnhancedQuestionUpload() {
               {(module === "listening" || module === "reading") && (
                 <>
                   <div className="space-y-4">
-                    <Label className="text-base font-medium">Answer Options</Label>
+                    <Label className="text-[#0C1E46] font-medium">Answer Options</Label>
                     <div className="grid grid-cols-2 gap-4">
                       {Object.entries(formData.options).map(([k, v]) => (
                         <div key={k} className="space-y-2">
-                          <Label className="text-sm font-medium">Option {k}</Label>
+                          <Label className="text-[#0C1E46] text-sm font-medium">Option {k}</Label>
                           <Input
                             value={v as string}
                             onChange={e => handleOption(k, e.target.value)}
                             placeholder={`Option ${k}`}
                             required
-                            className="h-12"
+                            className="text-[#0C1E46] h-12"
                           />
                         </div>
                       ))}
@@ -297,12 +297,12 @@ export default function EnhancedQuestionUpload() {
                   </div>
 
                   <div className="space-y-3">
-                    <Label className="text-base font-medium">Correct Answer</Label>
+                    <Label className="text-[#0C1E46] font-medium">Correct Answer</Label>
                     <Select value={formData.correct_answer} onValueChange={v => handleChange("correct_answer", v)}>
-                      <SelectTrigger className="h-12 w-32">
+                      <SelectTrigger className="text-[#0C1E46]  h-12 w-32">
                         <SelectValue />
                       </SelectTrigger>
-                      <SelectContent>
+                      <SelectContent className="text-[#0C1E46]">
                         {["A", "B", "C", "D"].map(l => (
                           <SelectItem key={l} value={l}>{l}</SelectItem>
                         ))}
@@ -314,25 +314,25 @@ export default function EnhancedQuestionUpload() {
 
               {/* Explanation */}
               <div className="space-y-3">
-                <Label className="text-base font-medium">Explanation / Model Answer</Label>
+                <Label className="text-[#0C1E46] font-medium">Explanation / Model Answer</Label>
                 <Textarea
                   placeholder="Why is this correct? Provide guidance..."
                   value={formData.explanation}
                   onChange={e => handleChange("explanation", e.target.value)}
                   required
                   rows={5}
-                  className="text-base resize-none"
+                  className="text-[#0C1E46] resize-none"
                 />
               </div>
 
               {/* Difficulty */}
               <div className="space-y-3">
-                <Label className="text-base font-medium">Difficulty Level</Label>
+                <Label className="text-[#0C1E46] font-medium">Difficulty Level</Label>
                 <Select value={formData.difficulty_level} onValueChange={v => handleChange("difficulty_level", v)}>
-                  <SelectTrigger className="h-12 w-48">
+                  <SelectTrigger className="text-[#0C1E46] h-12 w-48">
                     <SelectValue />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="bg-white text-[#0C1E46]">
                     <SelectItem value="beginner">Beginner</SelectItem>
                     <SelectItem value="intermediate">Intermediate</SelectItem>
                     <SelectItem value="advanced">Advanced</SelectItem>

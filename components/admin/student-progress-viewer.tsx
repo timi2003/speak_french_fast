@@ -88,8 +88,8 @@ export default function StudentProgressViewer() {
       {/* HERO HEADER — Compact & Powerful */}
       <div className="text-center">
         <div className="inline-block bg-gradient-to-r from-[#0C1E46] to-[#0a1838] text-white px-8 py-8 md:py-10 rounded-2xl shadow-xl">
-          <Users className="w-16 h-16 md:w-20 md:h-20 mx-auto mb-4" />
-          <h1 className="text-3xl md:text-5xl font-bold">
+          <Users className="w-8 h-8 md:w-20 md:h-20 mx-auto mb-4" />
+          <h1 className="text-2xl md:text-3xl font-bold">
             Student <span className="text-[#ED4137]">Progress</span>
           </h1>
           <p className="text-lg md:text-xl text-blue-100 mt-4 max-w-3xl mx-auto">

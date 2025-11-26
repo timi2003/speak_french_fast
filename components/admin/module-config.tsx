@@ -76,14 +76,14 @@ export default function ModuleConfig() {
     <div className="w-full space-y-8 px-4 sm:px-6 lg:px-8">
       <Tabs defaultValue="listening" className="w-full">
         {/* RESPONSIVE TABS — Stacked on mobile, horizontal on larger */}
-        <TabsList className="grid grid-cols-2 sm:grid-cols-4 w-full h-auto min-h-16 bg-white/90 backdrop-blur-xl shadow-2xl rounded-2xl border border-gray-200/50 p-2 gap-2">
+        <TabsList className="text-[#0C1E46] grid grid-cols-2 sm:grid-cols-4 w-full h-auto min-h-16 bg-white/90 backdrop-blur-xl shadow-2xl rounded-2xl border border-gray-200/50 p-2 gap-2">
           {MODULES.map((mod) => {
             const Icon = mod.icon;
             return (
               <TabsTrigger
                 key={mod.id}
                 value={mod.id}
-                className="flex flex-col sm:flex-row items-center justify-center gap-2 py-4 px-3 text-xs sm:text-sm md:text-base font-bold data-[state=active]:bg-[#0C1E46] data-[state=active]:text-white rounded-xl transition-all"
+                className="text-[#0C1E46] flex flex-col sm:flex-row items-center justify-center gap-2 py-4 px-3 text-xs sm:text-sm md:text-base font-bold data-[state=active]:bg-[#0C1E46] data-[state=active]:text-white rounded-xl transition-all"
               >
                 <Icon className="w-6 h-6 sm:w-5 sm:h-5" />
                 <span className="hidden xxs:inline sm:inline">{mod.name}</span>
@@ -102,11 +102,11 @@ export default function ModuleConfig() {
             <TabsContent key={mod.id} value={mod.id} className="mt-8">
               <Card className="border-0 shadow-2xl overflow-hidden rounded-3xl bg-white/95 backdrop-blur-xl">
                 {/* Header — Beautiful gradient */}
-                <CardHeader className={`bg-gradient-to-r ${mod.color} text-white py-10 sm:py-12 px-6`}>
+                <CardHeader className={`bg-gradient-to-r ${mod.color} text-white py-6 sm:py-8 px-6`}>
                   <div className="flex flex-col sm:flex-row items-center justify-center gap-6 text-center sm:text-left">
                     <Icon className="w-20 h-20 sm:w-24 sm:h-24" />
                     <div>
-                      <CardTitle className="text-3xl sm:text-4xl md:text-5xl font-black leading-tight">
+                      <CardTitle className="text-xl sm:text-2xl md:text-3xl font-black leading-tight">
                         {mod.name} Module
                       </CardTitle>
                       <p className="text-lg sm:text-xl mt-3 opacity-90 font-medium">
@@ -132,7 +132,7 @@ export default function ModuleConfig() {
                         onChange={(e) =>
                           updateLocalConfig(mod.id, "timer_minutes", Number(e.target.value))
                         }
-                        className="h-14 sm:h-16 text-xl border-2 rounded-2xl focus:border-[#0C1E46] focus:ring-4 focus:ring-[#B0CCFE]/30"
+                        className="border-[#0C1E46] text-[#0C1E46] h-14 sm:h-16 text-xl border-2 rounded-2xl focus:border-[#0C1E46] focus:ring-4 focus:ring-[#B0CCFE]/30"
                         placeholder="45"
                       />
                     </div>
@@ -150,7 +150,7 @@ export default function ModuleConfig() {
                         onChange={(e) =>
                           updateLocalConfig(mod.id, "number_of_questions", Number(e.target.value))
                         }
-                        className="h-14 sm:h-16 text-xl border-2 rounded-2xl focus:border-[#0C1E46] focus:ring-4 focus:ring-[#B0CCFE]/30"
+                        className="border-[#0C1E46] text-[#0C1E46] h-14 sm:h-16 text-xl border-2 rounded-2xl focus:border-[#0C1E46] focus:ring-4 focus:ring-[#B0CCFE]/30"
                         placeholder="20"
                       />
                     </div>
@@ -170,7 +170,7 @@ export default function ModuleConfig() {
                         onChange={(e) =>
                           updateLocalConfig(mod.id, "allow_replays", Number(e.target.value))
                         }
-                        className="h-14 sm:h-16 text-xl border-2 rounded-2xl focus:border-[#0C1E46] focus:ring-4 focus:ring-[#B0CCFE]/30"
+                        className="border-[#0C1E46] text-[#0C1E46] h-14 sm:h-16 text-xl border-2 rounded-2xl focus:border-[#0C1E46] focus:ring-4 focus:ring-[#B0CCFE]/30"
                         placeholder="3"
                       />
                     </div>
@@ -188,7 +188,7 @@ export default function ModuleConfig() {
                       }
                       placeholder="Write clear instructions students will see before starting this module..."
                       rows={6}
-                      className="text-base sm:text-lg resize-none border-2 rounded-2xl focus:border-[#0C1E46] focus:ring-4 focus:ring-[#B0CCFE]/30 p-5"
+                      className="border-[#0C1E46] text-[#0C1E46] sm:text-lg resize-none border-2 rounded-2xl focus:border-[#0C1E46] focus:ring-4 focus:ring-[#B0CCFE]/30 p-5"
                     />
                   </div>
 

@@ -68,28 +68,28 @@ export default function AdminDashboard({ user }: any) {
           <TabsList className="grid grid-cols-2 sm:grid-cols-4 w-full h-14 bg-white/90 backdrop-blur-md shadow-md rounded-xl mb-8 border border-gray-200">
             <TabsTrigger
               value="module-config"
-              className="text-xs sm:text-sm font-medium data-[state=active]:bg-[#0C1E46] data-[state=active]:text-white rounded-l-xl sm:rounded-none flex items-center justify-center gap-2"
+              className="text-[#0C1E46] text-xs sm:text-sm font-medium data-[state=active]:bg-[#0C1E46] data-[state=active]:text-white rounded-l-xl sm:rounded-none flex items-center justify-center gap-2"
             >
               <Settings className="w-4 h-4" />
               <span className="hidden sm:inline">Module</span> Config
             </TabsTrigger>
             <TabsTrigger
               value="questions"
-              className="text-xs sm:text-sm font-medium data-[state=active]:bg-[#0C1E46] data-[state=active]:text-white flex items-center justify-center gap-2"
+              className="text-[#0C1E46] text-xs sm:text-sm font-medium data-[state=active]:bg-[#0C1E46] data-[state=active]:text-white flex items-center justify-center gap-2"
             >
               <Upload className="w-4 h-4" />
               <span className="hidden sm:inline">Upload</span> Questions
             </TabsTrigger>
             <TabsTrigger
               value="daily-tasks"
-              className="text-xs sm:text-sm font-medium data-[state=active]:bg-[#ED4137] data-[state=active]:text-white flex items-center justify-center gap-2"
+              className="text-[#0C1E46] text-xs sm:text-sm font-medium data-[state=active]:bg-[#ED4137] data-[state=active]:text-white flex items-center justify-center gap-2"
             >
               <CalendarDays className="w-4 h-4" />
               <span className="hidden sm:inline">Daily</span> Tasks
             </TabsTrigger>
             <TabsTrigger
               value="student-progress"
-              className="text-xs sm:text-sm font-medium data-[state=active]:bg-[#0C1E46] data-[state=active]:text-white rounded-r-xl sm:rounded-none flex items-center justify-center gap-2"
+              className="text-[#0C1E46] text-xs sm:text-sm font-medium data-[state=active]:bg-[#0C1E46] data-[state=active]:text-white rounded-r-xl sm:rounded-none flex items-center justify-center gap-2"
             >
               <Users className="w-4 h-4" />
               <span className="hidden sm:inline">Student</span> Progress

@@ -151,7 +151,7 @@ export default function CycleTaskManager() {
                 <TabsTrigger
                   key={c}
                   value={c.toString()}
-                  className="text-sm font-bold data-[state=active]:bg-[#0C1E46] data-[state=active]:text-white"
+                  className="text-[#0C1E46] text-sm font-bold data-[state=active]:bg-[#0C1E46] data-[state=active]:text-white"
                 >
                   Cycle {c}
                 </TabsTrigger>
@@ -188,17 +188,19 @@ export default function CycleTaskManager() {
 
       {/* Add Task Form */}
       <Card className="shadow-xl border-0">
+        <div className="bg-[#0C1E46]">
         <CardHeader className="bg-gradient-to-r from-[#0C1E46] to-[#0a1838] text-white">
           <CardTitle className="text-2xl font-bold flex items-center gap-3">
             <Plus className="w-8 h-8" />
             Add Daily Task
           </CardTitle>
         </CardHeader>
+        </div>
         <CardContent className="p-8">
           <form onSubmit={handleCreate} className="space-y-8">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div className="space-y-3">
-                <Label className="text-base font-medium">Day Number (1–30)</Label>
+                <Label className="text-[#0C1E46] font-medium">Day Number (1–30)</Label>
                 <Input
                   type="number"
                   min="1"
@@ -206,17 +208,17 @@ export default function CycleTaskManager() {
                   value={formData.day_number}
                   onChange={(e) => setFormData({ ...formData, day_number: +e.target.value })}
                   required
-                  className="h-14 text-lg border-2 focus:border-[#0C1E46] rounded-xl"
+                  className="border-[#0C1E46] text-[#0C1E46] h-14 text-lg border-2 focus:border-[#0C1E46] rounded-xl"
                 />
               </div>
 
               <div className="space-y-3">
-                <Label className="text-base font-medium">Task Type</Label>
+                <Label className="text-[#0C1E46] font-medium">Task Type</Label>
                 <Select value={formData.task_type} onValueChange={(v) => setFormData({ ...formData, task_type: v as any })}>
-                  <SelectTrigger className="h-14 text-base">
+                  <SelectTrigger className="h-14 border-[#0C1E46] text-[#0C1E46]">
                     <SelectValue />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="bg-white text-[#0C1E46]">
                     {TASK_TYPES.map((type) => (
                       <SelectItem key={type} value={type} className="capitalize">
                         {type}
@@ -239,14 +241,14 @@ export default function CycleTaskManager() {
             </div>
 
             <div className="space-y-3">
-              <Label className="text-base font-medium">Instructions / Prompt</Label>
+              <Label className="text-[#0C1E46] font-medium">Instructions / Prompt</Label>
               <Textarea
                 placeholder="e.g., Listen to the dialogue and answer the questions / Record yourself describing your daily routine..."
                 value={formData.instructions}
                 onChange={(e) => setFormData({ ...formData, instructions: e.target.value })}
                 required
                 rows={5}
-                className="text-base resize-none border-2 focus:border-[#0C1E46] rounded-xl"
+                className="border-[#0C1E46] text-[#0C1E46] resize-none border-2 focus:border-[#0C1E46] rounded-xl"
               />
             </div>
           </form>
@@ -254,9 +256,9 @@ export default function CycleTaskManager() {
       </Card>
 
       {/* Tasks Table */}
-      <Card className="shadow-xl border-0">
-        <CardHeader className="bg-gray-50">
-          <CardTitle className="text-2xl font-bold">
+      <Card className="shadow-xl border-0 border-[#0C1E46]">
+        <CardHeader className="bg-gray-200">
+          <CardTitle className="text-2xl text-[#0C1E46] font-bold">
             Cycle {selectedCycle} Tasks ({tasks.length}/30)
           </CardTitle>
         </CardHeader>
@@ -265,18 +267,18 @@ export default function CycleTaskManager() {
             <div className="p-12 text-center text-gray-500">Loading tasks...</div>
           ) : tasks.length === 0 ? (
             <div className="p-12 text-center text-gray-500">
-              <CalendarDays className="w-16 h-16 mx-auto mb-4 text-gray-300" />
+              <CalendarDays className="w-16 h-16 mx-auto mb-4 text-[#0C1E46]" />
               <p className="text-lg">No tasks yet. Start building this cycle!</p>
             </div>
           ) : (
-            <div className="overflow-x-auto">
+            <div className="text-[#0C1E46] overflow-x-auto">
               <Table>
                 <TableHeader>
-                  <TableRow className="bg-gray-50">
-                    <TableHead className="font-bold">Day</TableHead>
-                    <TableHead className="font-bold">Type</TableHead>
-                    <TableHead className="font-bold">Instructions</TableHead>
-                    <TableHead className="font-bold text-right">Action</TableHead>
+                  <TableRow className="text-[#0C1E46] bg-gray-50">
+                    <TableHead className="text-[#0C1E46] font-bold">Day</TableHead>
+                    <TableHead className="text-[#0C1E46] font-bold">Type</TableHead>
+                    <TableHead className="text-[#0C1E46] font-bold">Instructions</TableHead>
+                    <TableHead className="text-[#0C1E46] font-bold text-right">Action</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
