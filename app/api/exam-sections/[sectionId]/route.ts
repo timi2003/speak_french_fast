@@ -1,9 +1,14 @@
-import { createClient } from "@/lib/supabase/server"
-import { type NextRequest, NextResponse } from "next/server"
+import { createClient } from "@/lib/supabase/server";
+import { type NextRequest, NextResponse } from "next/server";
 
-export async function GET(request: NextRequest, { params }: { params: { sectionId: string } }) {
+export async function GET(
+  request: NextRequest,
+  context: { params: Promise<{ sectionId: string }> }
+) {
   try {
-    const supabase = await createClient()
+    const { sectionId } = await context.params; // ✅ Must await params in Next.js 16
+
+    const supabase = await createClient();
 
     const { data: section, error } = await supabase
       .from("exam_sections")
@@ -18,20 +23,23 @@ export async function GET(request: NextRequest, { params }: { params: { sectionI
           image_url,
           answer_options (id, option_letter, option_text)
         )
-      `,
+      `
       )
-      .eq("id", params.sectionId)
-      .single()
+      .eq("id", sectionId)
+      .single();
 
     if (error) {
-      return NextResponse.json({ error: error.message }, { status: 500 })
+      return NextResponse.json({ error: error.message }, { status: 500 });
     }
 
-    return NextResponse.json(section)
+    return NextResponse.json(section);
   } catch (error) {
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : "Internal server error" },
-      { status: 500 },
-    )
+      {
+        error:
+          error instanceof Error ? error.message : "Internal server error",
+      },
+      { status: 500 }
+    );
   }
 }
