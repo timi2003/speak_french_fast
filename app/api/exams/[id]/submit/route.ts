@@ -1,8 +1,13 @@
 import { createClient } from "@/lib/supabase/server"
 import { type NextRequest, NextResponse } from "next/server"
 
-export async function POST(request: NextRequest, { params }: { params: { id: string } }) {
+export async function POST(
+  request: NextRequest,
+  context: { params: Promise<{ id: string }> }
+) {
   try {
+    const { id } = await context.params  // ✅ FIX: Await params for Next.js 16
+
     const supabase = await createClient()
 
     const {
@@ -26,7 +31,7 @@ export async function POST(request: NextRequest, { params }: { params: { id: str
       .select("*")
       .eq("id", attemptId)
       .eq("student_id", user.id)
-      .eq("exam_id", params.id)
+      .eq("exam_id", id)
       .single()
 
     if (fetchError || !attempt) {
@@ -45,13 +50,16 @@ export async function POST(request: NextRequest, { params }: { params: { id: str
     if (updateError) throw updateError
 
     // Trigger grading logic
-    const gradeResponse = await fetch(new URL(`/api/exams/${params.id}/grade`, request.url), {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ attemptId }),
-    })
+    const gradeResponse = await fetch(
+      new URL(`/api/exams/${id}/grade`, request.url),
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ attemptId }),
+      }
+    )
 
     const gradeResult = await gradeResponse.json()
 
